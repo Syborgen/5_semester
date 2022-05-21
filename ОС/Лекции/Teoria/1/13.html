@@ -1,0 +1,276 @@
+<HTML>
+<HEAD>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1251">
+<TITLE>2 Создание загрузочной дискеты</TITLE>
+</HEAD>
+<BODY>
+<P ALIGN="CENTER"><font color="#000000">Создание загрузочной дискеты</font></P>
+</font></B><FONT FACE="Times New Roman"> 
+<P ALIGN="JUSTIFY">Форматирование дискеты производится с помощью команды Format. 
+  Если в команде Format указать параметр /S, то будет подготовлен системный диск, 
+  т.е. загрузочный диск. При этом после обычного форматирования на диск будут 
+  скопированы (с текущего диска) файлы COMMAND.COM (командный процессор DOS), 
+  системные файлы DOS – IO.SYS, MSDOS.SYS (в зависимости от версии DOS эти файлы 
+  могут называться иначе).</P>
+<P ALIGN="JUSTIFY">Пример : format a: /s – отформатировать дискету А и сделать 
+  ее системной.</P>
+<I> 
+<P ALIGN="JUSTIFY">Перенос на диск системных файлов DOS</P>
+</I></FONT> 
+<P ALIGN="JUSTIFY"><FONT FACE="Times New Roman">Входящая в MS DOS программа sys 
+  делает указанный диск системным, перенося туда системные файлы DOS: IO.</font>SYS, 
+  MSDOS.SYS, COMMAND.COM, DRVSPACE.BIN</P>
+<P ALIGN="JUSTIFY"><FONT FACE="Times New Roman">Формат команды: sys [<I>путь</I></font>] 
+  <I><FONT FACE="Times New Roman">диск</font></I>:</P>
+<FONT FACE="Times New Roman"> 
+<P ALIGN="JUSTIFY">Параметр <I>диск </I>указывает, на какой диск надо переносить 
+  системные файлы DOS. Если параметр <I>путь </I>задан, он указывает путь к каталогу, 
+  из которого берутся системные файлы DOS. Если этот параметр не задан, системные 
+  файлы DOS копируются из корневого каталога текущего диска.</P>
+<P ALIGN="JUSTIFY">Например: sys a: - перенести на диск А системные файлы из корневого 
+  каталога текущего диска;</P>
+<P ALIGN="JUSTIFY">&#9;&#9;Sys d: \ a: - перенести на диск А системные файлы из 
+  каталога D: \. </P>
+<DIR> 
+  <DIR> <B><I> 
+    <P ALIGN="JUSTIFY">Файл CONFIG.SYS</P>
+    </i></b></DIR>
+</DIR>
+<P ALIGN="JUSTIFY">В корневом каталоге диска, с которого загружается операционная 
+  система, может находиться файл CONFIG.SYS, задающий параметры операционной системы 
+  DOS, а также указывающий, какие программы, расширяющие возможности операционной 
+  системы, необходимо загружать в оперативную память (эти программы называются 
+  драйверами устройств, хотя они не обязаны управлять работой каких-либо устройств).</P>
+<P ALIGN="JUSTIFY">Если файл CONFIG.SYS в корневом каталоге диска, с которого 
+  загружается операционная система, отсутствует, то ее параметры будут установлены 
+  по умолчанию.</P>
+<P ALIGN="JUSTIFY">Замечание. При изменениии файла CONFIG.SYS соответствующие 
+  параметры конфигурации системы изменяются только после перезагрузки ДОС.</P>
+<P ALIGN="JUSTIFY">Файл CONFIG.SYS должен представлять собой текстовый (ASCII) 
+  файл.</P>
+<P ALIGN="JUSTIFY">Каждая строка этого файла имеет вид:</P>
+<P ALIGN="JUSTIFY">имя - команды = значение</P>
+<P ALIGN="JUSTIFY">Ниже перечисляются наиболее часто используемые команды файла 
+  CONFIG.SYS:</P>
+<P ALIGN="JUSTIFY">Break = on ~ - установить режим проверки нажатия [Ctrl-Break] 
+  при операциях ввода-вывода с диском; это позволяет прерывать выполнение программ, 
+  которые иначе бы выполнялись до своего завершения;</P>
+<P ALIGN="JUSTIFY">Buffers = число-буферов - установка числа буферов для операции 
+  ввода-вывода с диском.</P>
+<P ALIGN="JUSTIFY">Для IBM PC без жесткого диска рекомендуется использовать 4-5 
+  буферов для IBM PC XT с жестким диском емкостью 10-20М - 15-20 буферов, для 
+  IBM PC AT с жестким диском 20-40М - 30-40 буферов;</P>
+<P ALIGN="JUSTIFY">Country=049 (для DOS версии до MS DOS 3.2);</P>
+<P ALIGN="JUSTIFY">Country=049, полное-имя-файла-COUNTRY.SYS (для DOS версий, 
+  начиная с MS DOS 3.3) - установка удобного формата выдачи информации о дате 
+  и времени;</P>
+<P ALIGN="JUSTIFY">Files=20 - установка максимального числа одновременно открытых 
+  файлов. Многие программы требуют для своего выполнения, чтобы значение параметра 
+  FILES было не менее 20;</P>
+<P ALIGN="JUSTIFY">Shell=COMMAND.COM/Е:число-байтов/Р - увеличение размера области 
+  памяти, в которой хранятся переменные окружения.</P>
+<P ALIGN="JUSTIFY">Если размер области памяти для хранения переменных окружения 
+  недостаточно, то DOS выдает сообщение: "Out of environment space";</P>
+<P ALIGN="JUSTIFY">Device = имя-файла-драйвера [параметры] - установка драйвера 
+  устройства.</P>
+<P ALIGN="JUSTIFY">Например, если файлы драйверов находятся в каталоге C:\EXE\SYS, 
+  то команда device=C:\EXE\SYS\ANSI.SYS установит драйвер ANSI.SYS, расширяющий 
+  возможности по выводу на экран и позволяющий переопределять значение клавиш 
+  на клавиатуре;</P>
+<P ALIGN="JUSTIFY">device=C:\exe\sys\vdisk.sys размер-диска[/E] - установит "электронный" 
+  диск.</P>
+<P ALIGN="JUSTIFY">Размер диска задается в килобайтах. Параметр /Е указывает, 
+  что "электронный" диск должен размещаться в расширенной памяти процессора Intel-80286 
+  или 80386 (сверх 640К).</P>
+<B><I> 
+<P ALIGN="JUSTIFY">Файл AUTOEXEC.BAT</P>
+</i></B> 
+<P ALIGN="JUSTIFY">При начальной загрузке операционная система DOS ищет в корневом 
+  каталоге того диска, с которого она загружается, файл AUTOEXEC.BAT.</P>
+<P ALIGN="JUSTIFY">Если этот файл будет найден, то он выполнится. В командный 
+  файл AUTOEXEC.BAT удобно записать команды, которые должны выполняться каждый 
+  раз при начальной загрузке операционной системы .</P>
+<P ALIGN="JUSTIFY">Эти команды могут осуществить необходимую настройку операционной 
+  системы и установить удобное для работы окружение.</P>
+<P ALIGN="JUSTIFY">Кроме того, при наличии файла AUTOEXEC.BAT операционная система 
+  не задает в процесс загрузки вопросов о текущей дате и времени.</P>
+<P ALIGN="JUSTIFY">Установка списка каталогов, в которых производится поиск программ.</P>
+<P ALIGN="JUSTIFY">Пример:PATH E:\WIN;D\ALDUS;C:\SYS;C:\NC;C:\NU;C:\ARC;</P>
+<P ALIGN="JUSTIFY">Установка формата приглашения DOS.</P>
+<P ALIGN="JUSTIFY">Пример: PROMPT $P$G</P>
+<P ALIGN="JUSTIFY">Установка переменных окружения.</P>
+<P ALIGN="JUSTIFY">Пример: set clipper=f51</P>
+</FONT> 
+<P ALIGN="JUSTIFY">set TEMP=E:\WIN\TEMP</P>
+<FONT FACE="Times New Roman"> 
+<P ALIGN="JUSTIFY">Запуск необходимых программ.</P>
+<P ALIGN="JUSTIFY">Пример: c:\AV\ADINF.EXE C: D: E: -A -B -D</P>
+</FONT> 
+<DIR> 
+  <DIR> 
+    <P ALIGN="JUSTIFY">C:\KEYRUS\KEYRUS.COM</P>
+  </DIR>
+</DIR>
+<P ALIGN="JUSTIFY">VC.COM</P>
+<FONT FACE="Times New Roman"> 
+<P ALIGN="JUSTIFY">Перечень команд, используемых при написании CONFIG.SYS</P>
+</FONT> 
+<TABLE BORDER CELLSPACING=1 CELLPADDING=7 WIDTH=555>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">BUFFERS 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY"><FONT FACE="Times New Roman">Задание объема буферов для 
+        обращения к дискетам/жестким дискам</font>; 
+    </TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">COUNTRY 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Национальная настройка 
+      </FONT></TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">DEVICE 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Установка драйверов периферийных устройств; 
+      </FONT></TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">DEVICEHIGH 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Загрузка драйверов для периферийных устройств в зону 
+        памяти Upper Memory Area; 
+      </FONT></TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">DRIVPARM 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Изменение рабочих параметров имеющихся периферийных устройств, 
+        н-р, дисковода 
+      </FONT></TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">FCBS 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Задание числа одновременно открываемых блоков управления 
+        файлов 
+      </FONT></TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">FILES 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Задание максимального числа одновременно открытых файлов 
+      </FONT></TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">INCLUDE 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Включение одного конфигурационного блока в другой 
+      </FONT></TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">INSTALL 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Выполнение определенных команд MS-DOS в файле CONFIG.SYS 
+      </FONT></TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">LASTDRIVE 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Задание символа обозначения последнего доступного дисковода 
+      </FONT></TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">STACKS 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Создание динамических стеков 
+      </FONT></TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">SHELL 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Определение интерпретатора команд 
+      </FONT></TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="22%" VALIGN="TOP"> 
+      <P ALIGN="JUSTIFY">SWITCHES 
+    </TD>
+    <TD WIDTH="18%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Внутренняя 
+      </FONT></TD>
+    <TD WIDTH="60%" VALIGN="TOP"> <FONT FACE="Times New Roman"> 
+      <P ALIGN="JUSTIFY">Остановка системных ключей 
+      </FONT></TD>
+  </TR>
+</TABLE>
+<FONT FACE="Times New Roman"> 
+<P ALIGN="JUSTIFY">Внутренние команды можно использовать без обращения к дискете 
+  или жесткому диску. Они интерпретируются программой COMMAND.COM, которая постоянно 
+  находится в оперативной памяти.<b><span
+lang=EN-US style='font-size:14.0pt;'></span></b></P>
+</FONT> 
+
+</BODY>
+</HTML>

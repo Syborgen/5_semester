@@ -1,0 +1,226 @@
+<html>
+
+<body>
+
+<h1 align="center">Master Boot Record (MBR)</h1>
+
+<p>Master Boot Record, создаётся, когда вы создаете первый раздел на
+жестком диске, вероятно большинство важных дата структур записываются на него в
+этот момент. Это первый сектор на любом диске. Расположение track (cylinder) 0, side (head) 0, sector 1.</p>
+
+<p>Master Boot Record содержит Partition Table на диске и маленький объем
+выполняемого кода. Master Boot Record находит стартовый системный раздел,
+расположенный на диске и загружает с него копию Partition Boot Sector 
+в память. The Master Boot Record передает выполняемый код в Partition
+Boot Sector.</p>
+
+<p>Physical Sector:Cyl 0,Side 0,Sector 1 </p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000000:00 33 C0 8E D0 BC 00 7C -8B F4 50 07
+50 1F FB FC .3.....|..P.P..<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000010:BF 00 06 B9 00 01 F2 A5 -EA 1D 06 00
+00 BE BE 07 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span></span><span lang=ES style='font-family:"Courier New";
+mso-ansi-language:ES'>00000020:B3 04 80 3C 80 74 0E 80 -3C 00 75 1C 83 C6 10 FE
+...&lt;.t..&lt;.u.....<span style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span></span><span lang=EN-GB style='font-family:
+"Courier New";mso-ansi-language:EN-GB'>00000030:CB 75 EF CD 18 8B 14 8B -4C 02
+8B EE 83 C6 10 FE .u......L.......<span style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000040:CB 74 1A 80 3C 00 74 F4 -BE 8B 06 AC
+3C 00 74 0B .t..&lt;.t.....&lt;.t.<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span></span><span lang=ES style='font-family:"Courier New";
+mso-ansi-language:ES'>00000050:56 BB 07 00 B4 0E CD 10 -5E EB F0 EB FE BF 05 00
+V.......^.......<span style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span></span><span lang=EN-GB style='font-family:
+"Courier New";mso-ansi-language:EN-GB'>00000060:BB 00 7C B8 01 02 57 CD -13 5F
+73 0C 33 C0 CD 13 ..|...W.._s.3...<span style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000070:4F 75 ED BE A3 06 EB D3 -BE C2 06 BF
+FE 7D 81 3D Ou...........}.=<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span></span><span lang=ES style='font-family:"Courier New";
+mso-ansi-language:ES'>00000080:55 AA 75 C7 8B F5 EA 00 -7C 00 00 49 6E 76 61 6C
+U.u.....|..Inval<span style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span></span><span lang=EN-GB style='font-family:
+"Courier New";mso-ansi-language:EN-GB'>00000090:69 64 20 70 61 72 74 69 -74 69
+6F 6E 20 74 61 62 id partition tab<span style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span>000000A0:6C 65 00 45 72 72 6F 72 -20 6C 6F 61
+64 69 6E 67 le.Error loading<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span>000000B0:20 6F 70 65 72 61 74 69 -6E 67 20 73
+79 73 74 65 operating syste<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span>000000C0:6D 00 4D 69 73 73 69 6E -67 20 6F 70
+65 72 61 74 m.Missing operat<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp; </span>000000D0:69 6E 67 20 73 79 73 74 -65 6D 00 00
+80 45 14 15 ing system...E..<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=EN-GB style='font-family:"Courier New";mso-ansi-language:EN-GB'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;</span></span><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'>000000E0:00 00
+00 00 00 00 00 00 -00 00 00 00 00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>000000F0:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000100:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000110:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000120:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000130:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000140:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000150:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000160:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000170:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000180:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>00000190:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>000001A0:00 00 00 00 00 00 00 00 -00 00 00 00
+00 00 00 00 ................ <span
+style='mso-spacerun:yes'>&nbsp;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>000001B0:00 00 00 00 00 00 00 00 -FD 4E F2 14
+00 00<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>.........N......<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>80 01<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>..<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>000001C0:01 00 06 0F 7F 96 3F 00 -00 00 51 42
+06 00 00 00 .....?...QB....<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>000001D0:41 97 07 0F FF 2C 90 42 -06 00 A0 3E
+06 00 00 00 A....,.B...&gt;....<span
+style='mso-spacerun:yes'>&nbsp; </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>000001E0:C1 2D 05 0F FF 92 30 81 -0C 00 A0 91
+01 00 00 00 .-....0......... <o:p></o:p></span></p>
+
+<p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
+lang=ES style='font-family:"Courier New";mso-ansi-language:ES'><span
+style='mso-spacerun:yes'>&nbsp; </span>000001F0:C1 93 01 0F FF A6 D0 12 -0E 00 C0 4E
+00 00 55 AA ...........N..U.<o:p></o:p></span></p>
+
+<p align=center>Рисунок 4.1 MBR </p>
+
+</body>
+
+</html>

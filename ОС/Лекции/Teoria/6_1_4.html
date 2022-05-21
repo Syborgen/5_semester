@@ -1,0 +1,454 @@
+<HTML>
+<HEAD>
+<TITLE>Классические проблемы межпроцессного взаимодействия</TITLE>
+</HEAD>
+<body>
+  
+<h1 align="center">Классические проблемы межпроцессного взаимодействия</h1>
+<p>Литература по операционным системам содержит множество интересных проблем, которые 
+  широко обсуждались и анализировались с применением различных методов синхронизации. 
+  В этом разделе мы рассмотрим три наиболее известные проблемы.<BR>
+  <br>
+  <br>
+<a NAME="01"></a>
+  <B><font size="4">Проблема обедающих философов</font></B><BR>
+  <br>
+  В 1965 году Дейкстра сформулировал и решил проблему синхронизации, названную 
+  им проблемой обедающих философов. С тех пор каждый, кто изобретал еще один новый 
+  примитив синхронизации, считал своим долгом продемонстрировать достоинства нового 
+  примитива на примере проблемы обедающих философов. Проблему можно сформулировать 
+  следующим образом: пять философов сидят за круглым столом, и у каждого есть 
+  тарелка со спагетти. Спагетти настолько скользкие, что каждому философу нужно 
+  две вилки, чтобы с ними управиться. Между каждыми двумя тарелками лежит одна 
+  вилка (рис. 2.18).<BR>
+</p>
+<p>Жизнь философа состоит из чередующихся периодов поглощения пищи и размышлений. 
+  (Разумеется, это абстракция, даже применительно к философам, но остальные процессы 
+  жизнедеятельности для нашей задачи несущественны.) Когда философ голоден, он 
+  пытается получить две вилки, левую и правую, в любом порядке. Если ему удалось 
+  получить две вилки, он некоторое время ест, затем кладет вилки обратно и продолжает 
+  размышления. Вопрос состоит в следующем: можно ли написать алгоритм, который 
+  моделирует эти действия для каждого философа и никогда не застревает? (Кое-кто 
+  считает, что необходимость двух вилок выглядит несколько искусственно. Возможно, 
+  нам следует заменить итальянскую пищу блюдами китайской кухни, спагетти — рисом, 
+  а вилки — соответствующими палочками.)<BR>
+  
+</p>
+<center>
+    <br>
+    <img src="06/Tanenbaum_2_16.jpg" alt="Время обеда на факультете философии"><br>
+    <br>
+    <font face="Arial"><B>Рис. 2.18. </B>Время обеда на факультете философии</font><BR>
+  </center>
+  <br>
+<p>В листинге 2.10 представлено очевидное решение проблемы. Процедура <I>take_ 
+  fork </I>ждет, пока указанная вилка не освободится, и берет ее. К сожалению, 
+  это решение неверно — представьте себе, что все пять философов возьмут одновременно 
+  свои левые вилки. Каждый останется без правой вилки, и произойдет взаимоблокировка.<BR>
+  
+</p>
+<center>
+    <br>
+    <font face="Arial"><B>Листинг 2.10.</B> Неверное решение проблемы обедающих 
+    философов</font><BR>
+    <TABLE FRAME="BOX" RULES="ALL" BORDER="1" CELLSPACING="0" CELLPADDING="0" width="709">
+      <TR> 
+        <TD width="705"> #define N 5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Количество философов */<br>
+          void philosospher(int i)&nbsp;&nbsp; /* i - номер философа, от 0 до 
+          4 */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {while(TRUE)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          {think(); /* Философ размышляет */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          take_fork(i); /* Берет левую вилку */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          take_fork((i+l) % N);/* Берет правую вилку */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          eat(); /* Спагетти, ням-ням */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          put_fork(i); /* Кладет на стол левую вилку */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          put_fork((i+l) % N); /* Кладет на стол правую вилку */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          }<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } </TD>
+      </TR>
+    </TABLE>
+    <br>
+  </center>
+<p align="left">Можно изменить программу так, чтобы после получения левой вилки проверялась 
+  доступность правой. Если правая вилка недоступна, философ отдает левую обратно, 
+  ждет некоторое время и повторяет весь процесс. Этот подход также не будет работать, 
+  хотя и по другой причине. Если не повезет, все пять философов могут начать процесс 
+  одновременно, взять левую вилку, обнаружить отсутствие правой, положить левую 
+  обратно на стол, одновременно взять левую вилку, и так до бесконечности. Ситуация, 
+  в которой все программы продолжают работать сколь угодно долго, но не могут 
+  добиться хоть какого-то прогресса, называется <B>зависанием процесса </B>(по-английски 
+  starvation, буквально &laquo;умирание от голода&raquo;. Этот термин применяется 
+  даже в том случае, когда проблема возникает не в итальянском или китайском ресторане, 
+  а на компьютерах).<BR>
+</p>
+<p align="left">Вы можете подумать: &laquo;Если философы будут размышлять в течение некоторого 
+  случайно выбранного промежутка времени после неудачной попытки взять правую 
+  вилку, вероятность того, что все процессы будут продолжать топтаться на месте 
+  хотя бы в течение часа, невелика&raquo;. Это правильно, и для большинства приложений 
+  повторение попытки спустя некоторое время не является проблемой. Например, в 
+  локальной сети Ethernet в ситуации, когда два компьютера посылают пакеты одновременно, 
+  каждый должен подождать случайно заданное время и повторить попытку — на практике 
+  это решение хорошо работает. Тем не менее в некоторых приложениях предпочтительным 
+  является другое решение, работающее всегда и не зависящее от случайных чисел 
+  (например, в приложении для обеспечения безопасности на атомных электростанциях).<BR>
+</p>
+<p align="left">В листинг 2.10 можно внести улучшение, исключающее взаимоблокировку и зависание 
+  процесса: защитить пять операторов, следующих за запросом <I>think, </I>бинарным 
+  семафором. Тогда философ должен будет выполнить операцию down на переменной 
+  <I>mutex </I>прежде, чем потянуться к вилкам. А после возврата вилок на место 
+  ему следует выполнить операцию up на переменной <I>mutex. </I>С теоретической 
+  точки зрения решение вполне подходит. С точки зрения практики возникают проблемы 
+  с эффективностью: в каждый момент времени может есть спагетти только один философ. 
+  Но вилок пять, поэтому необходимо разрешить есть в каждый момент времени двум 
+  философам.<BR>
+</p>
+<p align="left">Решение, представленное в листинге 2.11, исключает взаимоблокировку и позволяет 
+  реализовать максимально возможный параллелизм для любого числа философов. Здесь 
+  используется массив <I>state </I>для отслеживания душевного состояния каждого 
+  философа: он либо ест, либо размышляет, либо голодает (пытаясь получить вилки). 
+  Философ может начать есть, только если ни один из его соседей не ест. Соседи 
+  философа с номером <I>г </I>определяются макросами <I>LEFT </I>и<I> RIGHT </I>(то 
+  есть если <I>i</I> = 2, то <I>LEFT = </I>1 и <I>RIGHT = </I>3).<BR>
+  
+</p>
+<center>
+    <br>
+    <font face="Arial"><B>Листинг 2.11.</B> Решение задачи обедающих философов</font><BR>
+    <TABLE FRAME="BOX" RULES="ALL" BORDER="1" CELLSPACING="0" CELLPADDING="0" width="709">
+      <TR> 
+        <TD width="705"> #define N 5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Количество философов */<br>
+          #define LEFT (i+N.l)%N&nbsp;&nbsp;&nbsp; /* Номер левого соседа философа 
+          с номером 1 */<br>
+          #define RIGHT (i+1)%N&nbsp;&nbsp;&nbsp; /* Номер правого соседа философа 
+          с номером i */<br>
+          #define THINKING 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Философ 
+          размышляет */<br>
+          #define HUNGRY 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Философ пытается получить вилки */<br>
+          #define EATING 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Философ ест */<br>
+          typedef int semaphore;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* 
+          Семафоры - особый вид целочисленных переменных */<br>
+          int state[N];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Массив для отслеживания состояния каждого философа */<br>
+          semaphore mutex = 1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Взаимное 
+          исключение для критических областей */<br>
+          semaphore s[N];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Каждому философу по семафору */<br>
+          <br>
+          void philosopher(int i)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* i - номер философа, от 0 до N-1 */&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {while (TRUE)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Повторять до бесконечности */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          {think( );&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Философ размышляет */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          take_forks(i);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Получает две вилки или 
+          блокируется */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          eat( );&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Спагетти, ням-ням */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          put forks(i);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Кладет 
+          на стол обе вилки */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          }<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+          <br>
+          void take_forks(int i)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* i - номер философа, от 0 до N-1*/<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {down(&amp;mutex);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Вход в критическую область */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; state[i] = HUNGRY;&nbsp;&nbsp;&nbsp; 
+          /* Фиксация наличия голодного философа */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; test(i);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Попытка получить две вилки */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; up(&amp;mutex);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Выход из критической области */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; down(&amp;s[i]);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Блокировка, если вилок не досталось */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+          <br>
+          void put_forks(i)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* i - номер философа, от 0 до N-1*/<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {down(&amp;mutex);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Вход в критическую область */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; state[i] = THINKING;&nbsp;&nbsp; 
+          /* Философ перестал есть */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; test(LEFT);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Проверить, может ли есть сосед слева */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; test(RIGHT);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Проверить, может ли есть сосед справа */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; up(&amp;mutex);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Выход из критической области */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+          <br>
+          void test(i)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* i - номер философа, от 0 до N-1*/<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {if (state[i] = = HUNGRY &amp;&amp; state[LEFT] 
+          != EATING &amp;&amp; state[RIGHT] != EATING)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          {state[i] = EATING;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          up(&amp;s[i]);<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          }<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } </TD>
+      </TR>
+    </TABLE>
+    <br>
+  </center>
+<p align="left">В программе используется массив семафоров, по одному на философа, чтобы блокировать 
+  голодных философов, если их вилки заняты. Обратите внимание, что каждый процесс 
+  запускает процедуру <I>philosopher </I>в качестве своей основной программы, 
+  но остальные процедуры <I>take_forks, put_forks </I>и <I>test </I>являются обычными 
+  процедурами, а не отдельными процессами.<BR>
+  <br>
+  <br>
+<a NAME="02"></a>
+  <B><font size="4">Проблема читателей и писателей</font></B><BR>
+  <br>
+  Проблема обедающих философов полезна для моделирования процессов, соревнующихся 
+  за монопольный доступ к ограниченному количеству ресурсов, например к устройствам 
+  ввода-вывода. Другой известной задачей является проблема читателей и писателей 
+  [78], моделирующая доступ к базе данных. Представьте себе базу данных бронирования 
+  билетов на самолет, к которой пытается получить доступ множество процессов. 
+  Можно разрешить одновременное считывание данных из базы, но если процесс записывает 
+  информацию в базу, доступ остальных процессов должен быть прекращен, даже доступ 
+  на чтение. Как запрограммировать читателей и писателей? Одно из решений представлено 
+  в листинге 2.12.<BR>
+  
+</p>
+<center>
+    <br>
+    <font face="Arial"><B>Листинг 2.12.</B> Решение проблемы читателей и писателей</font><BR>
+    <TABLE FRAME="BOX" RULES="ALL" BORDER="1" CELLSPACING="0" CELLPADDING="0" width="709">
+      <TR> 
+        <TD width="705"> typedef int semaphore;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Воспользуйтесь своим воображением */<br>
+          semaphore mutex =1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Контроль 
+          доступа к rc */<br>
+          semaphore db = 1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Контроль доступа к базе данных */<br>
+          int rc = 0;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Количество процессов, читающих или желающих читать */<br>
+          <br>
+          void reader(void)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {while (TRUE)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Повторять до бесконечности */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          {down(&amp;mutex);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Получение 
+          монопольного доступа к rc */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          rc = rc+1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Одним читающим процессом больше */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          if (rc = = 1) down(&amp;db);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Если этот читающий процесс - первый.. */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          up(&amp;mutex);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Отказ от монопольного доступа к rc */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          read_data_base( );&nbsp;&nbsp;&nbsp; /* Доступ к данным */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          down(&amp;mutex);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* 
+          Получение монопольного доступа к rc */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          rc = rc-1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Одним читающим процессом меньше */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          if (rc == 0) up(&amp;db); /* Если этот читающий процесс - последний... */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          up(&amp;mutex);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Отказ от монопольного доступа к rc */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          use_data_read( );&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Вне критической 
+          области */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+          <br>
+          void writer(void)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{while (TRUE)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Повторять до бесконечности */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{think_up_data( 
+          );&nbsp;&nbsp;&nbsp;&nbsp; /* Вне критической области */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          down(&amp;db);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Получение монопольного доступа */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          write_data_base( );&nbsp;&nbsp; /* Запись данных */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          up(&amp;db);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Отказ от монопольного доступа */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+          } </TD>
+      </TR>
+    </TABLE>
+    <br>
+  </center>
+<p align="left">Первый читающий процесс выполняет операцию down на семафоре <I>db, </I>чтобы 
+  получить доступ к базе. Последующие читатели просто увеличивают значение счетчика 
+  <I>rс. </I>По мере ухода читателей из базы значение счетчика уменьшается, и 
+  последний читающий процесс выполняет на семафоре <I>db </I>операцию up, позволяя 
+  блокированному пишущему процессу получить доступ к базе.<BR>
+</p>
+<p align="left">В этом решении один момент требует комментариев. Представьте, что в то время 
+  как один читатель уже пользуется базой, другой читатель запрашивает доступ к 
+  базе. Доступ разрешается, поскольку читающие процессы друг другу не мешают. 
+  Доступ разрешается и третьему, и последующим читателям.<BR>
+</p>
+<p align="left">Затем доступ запрашивает пишущий процесс. Запрос отклонен, поскольку пишущим 
+  процессам необходим монопольный доступ, и пишущий процесс приостанавливается. 
+  Пока в базе есть хотя бы один активный читающий процесс, доступ остальным читателям 
+  разрешается, а они все приходят и приходят. Если, предположим, новый читающий 
+  процесс запрашивает доступ каждые 2 с, а провести в базе ему надо 5 с, то пишущий 
+  процесс никогда в базу не попадет.<BR>
+</p>
+<p align="left">Чтобы избежать такой ситуации, нужно немного изменить программу: если пишущий 
+  процесс ждет доступа к базе, новый читающий процесс доступа не получает, а становится 
+  в очередь за пишущим процессом. Теперь пишущему процессу нужно подождать, пока 
+  базу покинут уже находящиеся в ней читающие процессы, но не нужно пропускать 
+  вперед читающие процессы, пришедшие к базе после него. Недостаток этого решения 
+  заключается в снижении производительности, вызванном уменьшением конкуренции. 
+  В [78] представлено решение, в котором пишущим процессам предоставляется более 
+  высокий приоритет.<BR>
+  <br>
+  <br>
+<a NAME="03"></a>
+  <B><font size="4">Проблема спящего брадобрея</font></B><BR>
+  <br>
+  Действие еще одной классической проблемной ситуации межпроцессного взаимодействия 
+  разворачивается в парикмахерской. В парикмахерской есть один брадобрей, его 
+  кресло и <I>п </I>стульев для посетителей. Если желающих воспользоваться его 
+  услугами нет, брадобрей сидит в своем кресле и спит (рис. 2.19). Если в парикмахерскую 
+  приходит клиент, он должен разбудить брадобрея. Если клиент приходит и видит, 
+  что брадобрей занят, он либо садится на стул (если есть место), либо уходит 
+  (если места нет). Необходимо запрограммировать брадобрея и посетителей так, 
+  чтобы избежать состояния состязания. У этой задачи существует много аналогов 
+  в сфере массового обслуживания, например информационная служба, обрабатывающая 
+  одновременно ограниченное количество запросов, с компьютеризированной системой 
+  ожидания для запросов.<BR>
+  
+</p>
+<center>
+    <br>
+    <img src="06/Tanenbaum_2_17.jpg" alt="Спящий брадобрей"><br>
+    <br>
+    <font face="Arial"><B>Рис. 2.19.</B> Спящий брадобрей</font><BR>
+  </center>
+  <br>
+<p>В предлагаемом решении используются три семафора: <I>customers, </I>для подсчета 
+  ожидающих посетителей (клиент, сидящий в кресле брадобрея, не учитывается — 
+  он уже не ждет); <I>barbers, </I>количество брадобреев (0 или 1), простаивающих 
+  в ожидании клиента, и <I>mutex </I>для реализации взаимного исключения. Также 
+  используется переменная <I>waiting, </I>предназначенная для подсчета ожидающих 
+  посетителей.<BR>
+</p>
+<p>Она является копией переменной <I>customers. </I>Присутствие в программе этой 
+  переменной связано с тем фактом, что прочитать текущее значение семафора невозможно. 
+  В этом решении посетитель, заглядывающий в парикмахерскую, должен сосчитать 
+  количество ожидающих посетителей. Если посетителей меньше, чем стульев, новый 
+  посетитель остается, в противном случае он уходит.<BR>
+</p>
+<p>Решение представлено в листинге 2.13. Когда брадобрей приходит утром на работу, 
+  он выполняет процедуру <I>barber, </I>блокируясь на семафоре <I>customers, </I>поскольку 
+  значение семафора равно 0. Затем брадобрей засыпает, как показано на рис. 2.19, 
+  и спит, пока не придет первый клиент.<BR>
+  
+</p>
+<center>
+    <br>
+    <font face="Arial"><B>Листинг 2.13. </B>Решение проблемы спящего брадобрея</font><BR>
+    <TABLE FRAME="BOX" RULES="ALL" BORDER="1" CELLSPACING="0" CELLPADDING="0" width="709">
+      <TR> 
+        <TD width="705"> #define CHAIRS 5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Количество стульев для посетителей */<br>
+          typedef int semaphore;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* 
+          Догадайтесь сами */<br>
+          semaphore customers = 0;&nbsp; /* Количество ожидающих посетителей */<br>
+          semaphore barbers = 0;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Количество брадобреев, 
+          ждущих клиентов */<br>
+          semaphore mutex = 1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Для взаимного исключения */<br>
+          int waiting = 0;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          /* Ожидающие (не обслуживаемые) посетители */<br>
+          void barber(void)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {while (TRUE)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          {down(&amp;customers); /* Если посетителей нет. уйти в состояние ожидания 
+          */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          down(&amp;mutex); /* Запрос доступа к waiting */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          waiting = waiting - 1: /* Уменьшение числа ожидающих посетителей */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          up(&amp;barbers); /* Один брадобрей готов к работе */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          up(&amp;mutex); /* Отказ от доступа к waiting */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          cut_hair( ); /* Клиента обслуживают (вне критической области)*/<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          }<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+          <br>
+          void customer(void)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {down(&amp;mutex); /* Вход в критическую 
+          область */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (waiting &lt; CHAIRS) 
+          /* Если свободных стульев нет. придется уйти */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          {waiting = waiting + 1; /* Увеличение числа ожидающих посетителей */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          up(&amp;customers); /* При необходимости, разбудить брадобрея */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          up(&amp;mutex): /* Отказ от доступа к waiting */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          down(&amp;barbers); /* Если брадобрей занят, уйти е состояние ожидания */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          get_haircut( ); /* Клиента усаживают и обслуживают */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          } else<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          {up(&amp;mutex); /* Много посетителей, из парикмахерской придется уйти 
+          */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          }<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } </TD>
+      </TR>
+    </TABLE>
+    <br>
+  </center>
+<p align="left">Приходя в парикмахерскую, посетитель выполняет процедуру <I>customer, </I>запрашивая 
+  доступ к <I>mutex</I> для входа в критическую область. Если вслед за ним появится 
+  еще один посетитель, ему не удастся что-либо сделать, пока первый посетитель 
+  не освободит доступ к <I>mutex. </I>Затем посетитель проверяет наличие свободных 
+  стульев, в случае неудачи освобождает доступ к <I>mutex </I>и уходит.<BR>
+</p>
+<p align="left">Если свободный стул есть, посетитель увеличивает значение целочисленной переменной 
+  <I>waiting. </I>Затем он выполняет процедуру up на семафоре <I>customers, </I>тем 
+  самым активизируя поток брадобрея. В этот момент оба — посетитель и брадобрей 
+  — активны. Когда посетитель освобождает доступ к <I>mutex, </I>брадобрей захватывает 
+  его, проделывает некоторые служебные операции и начинает стричь клиента.<BR>
+</p>
+<p align="left">По окончании стрижки посетитель выходит из процедуры и покидает парикмахерскую. 
+  В отличие от предыдущих программ, цикла посетителя нет, поскольку каждого посетителя 
+  стригут только один раз. Цикл брадобрея существует, и брадобрей пытается найти 
+  следующего посетителя. Если ему это удается, он стрижет следующего посетителя, 
+  в противном случае брадобрей засыпает.<BR>
+</p>
+<p align="left">Стоит отметить, что, несмотря на отсутствие передачи данных в проблеме читателей 
+  и писателей и в проблеме спящего брадобрея, обе эти проблемы относятся к проблемам 
+  межпроцессного взаимодействия, поскольку требуют синхронизации нескольких процессов.<BR>
+</p>
+</BODY>
+</HTML>

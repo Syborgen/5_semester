@@ -1,0 +1,296 @@
+<html>
+<head>
+<title>DIR – Вывод списка файлов и подкаталогов из указанного каталога</title>
+</head>
+<body>
+  <div align="center"><b><span
+style='font-size:13.5pt'><font color="#000000">Основные команды MS-DOS</font></span><i></i></b> 
+    <p><font color="#0000FF"><span
+style='font-size:13.5pt'><font color="#000000">Файлы и каталоги.</font></span></font></p>
+    <font color="#0000FF"><span
+style='font-size:13.5pt'></span></font><font color="#000000"><span
+style='font-size:13.5pt'></span></font><span
+style='font-size:13.5pt'></span></div>
+  <p><span style='font-size:13.5pt'>Команды:</span></p>
+  <p><span lang=EN-US style='font-size:13.5pt;'><A HREF="#DIR">DIR</A>,<A HREF="#CD">CD</A>, 
+    <A HREF="#CHDIR">CHDIR</A>,<A HREF="#CHDSK">CHKDSK</A>,<A HREF="#CLS">CLS</A>,<A HREF="#COPY">COPY</A>, 
+    <A HREF="#DATE">DATE</A>,<A HREF="#DEL">DEL</A>,<A HREF="#DELTREE">DELTREE</A>,<A HREF="#ECHO">ECHO</A>, 
+    <A HREF="#ERASE">ERASE</A>,<A HREF="#FC">FC</A>,<A HREF="#MD">MD</A>,<A HREF="#MKDIR">MKDIR</A>,</span></p>
+  <p><span lang=EN-US style='font-size:13.5pt;'><A HREF="#MORE">MORE</A>,<A HREF="#MOVE">MOVE</A>, 
+    <A HREF="#RD">RD</A>,<A HREF="#RENAME">RENAME</A>,<A HREF="#RMDIR">RMDIR</A>,<A  HREF="#SORT">SORT</A></span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="DIR">DIR </A>– Вывод списка 
+    файлов и подкаталогов из указанного каталога.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>DIR [диск:][путь][имя_файла] [/P] [/W] [/A[[:]атрибуты]]</span></p>
+  <p><span style='font-size:11.0pt;'>[/O[[:]сортировка]] [/S] [/B] [/L] [/V]</span></p>
+  <p><span style='font-size:11.0pt;'>[диск:][путь][имя_файла]</span></p>
+  <p><span style='font-size:11.0pt;'>Диск, каталог и/или файлы, которые следует 
+    включить в список.</span></p>
+  <p><span style='font-size:11.0pt;'>(Может использоваться один или несколько 
+    образцов имен.)</span></p>
+  <p><span style='font-size:11.0pt;'>/P Пауза после заполнения каждого экрана.</span></p>
+  <p><span style='font-size:11.0pt;'>/W Вывод списка в несколько столбцов.</span></p>
+  <p><span style='font-size:11.0pt;'>/A Вывод файлов с заданными атрибутами.</span></p>
+  <p><span style='font-size:11.0pt;'>атрибуты D Каталоги R Доступные только для 
+    чтения</span></p>
+  <p><span style='font-size:11.0pt;'>H Скрытые файлы A Предназначенные для архивации</span></p>
+  <p><span style='font-size:11.0pt;'>S Системные файлы Префикс &quot;-&quot; имеет 
+    значение НЕ</span></p>
+  <p><span style='font-size:11.0pt;'>/O Сортировка списка отображаемых файлов.</span></p>
+  <p><span style='font-size:11.0pt;'>сортировка N по имени (алфавитная) S по размеру 
+    (начиная с меньших)</span></p>
+  <p><span style='font-size:11.0pt;'>E по расширению (алфавитная) D по дате (с 
+    более старых)</span></p>
+  <p><span style='font-size:11.0pt;'>G Начать список с каталогов Префикс &quot;-&quot; 
+    - обратный порядок</span></p>
+  <p><span style='font-size:11.0pt;'>A по дате загрузки (начиная с более старых)</span></p>
+  <p><span style='font-size:11.0pt;'>/S Вывод списка файлов из заданного каталога 
+    и его подкаталогов.</span></p>
+  <p><span style='font-size:11.0pt;'>/B Вывод только имен файлов.</span></p>
+  <p><span style='font-size:11.0pt;'>/L Использование нижнего регистра.</span></p>
+  <p><span style='font-size:11.0pt;'>/V Отображение расширенных сведений о файлах 
+    и каталогах.</span></p>
+  <p><span style='font-size:11.0pt;'>Ключи могут быть установлены с помощью переменной 
+    среды DIRCMD. Чтобы отменить их действие, в командную строку следует поместить 
+    те же ключи с префиксом &quot;-&quot;.</span></p>
+  <p><span style='font-size:11.0pt;'>Пример: /-W.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="CD">CD</A> - Вывод имени либо 
+    смена текущего каталога.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>CHDIR [диск:][путь]</span></p>
+  <p><span style='font-size:11.0pt;'>CHDIR[..]</span></p>
+  <p><span style='font-size:11.0pt;'>CD [диск:][путь]</span></p>
+  <p><span style='font-size:11.0pt;'>CD[..]</span></p>
+  <p><span style='font-size:11.0pt;'>.. задает необходимость перехода в родительский 
+    каталог.</span></p>
+  <p><span style='font-size:11.0pt;'>Команда CD диск: отображает имя текущего 
+    каталога заданного диска.</span></p>
+  <p><span style='font-size:11.0pt;'>Команда CD без параметров отображает имена 
+    текущих диска и каталога.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="CHDIR">CHDIR </A>– Вывод имени 
+    либо смена текущего каталога.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>CHDIR [диск:][путь]</span></p>
+  <p><span style='font-size:11.0pt;'>CHDIR[..]</span></p>
+  <p><span style='font-size:11.0pt;'>CD [диск:][путь]</span></p>
+  <p><span style='font-size:11.0pt;'>CD[..]</span></p>
+  <p><span style='font-size:11.0pt;'>.. задает необходимость перехода в родительский 
+    каталог.</span></p>
+  <p><span style='font-size:11.0pt;'>Команда CD диск: отображает имя текущего 
+    каталога заданного диска.</span></p>
+  <p><span style='font-size:11.0pt;'>Команда CD без параметров отображает имена 
+    текущих диска и каталога.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="CHKDSK">CHKDSK </A>– Проверка 
+    диска и вывод статистики.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>CHKDSK [диск:][[путь]имя_файла] [/F] [/V]</span></p>
+  <p><span style='font-size:11.0pt;'>[диск:][путь] Проверяемые диск и каталог.</span></p>
+  <p><span style='font-size:11.0pt;'>имя_файла Файлы, для которых проверяется 
+    наличие фрагментации.</span></p>
+  <p><span style='font-size:11.0pt;'>/F Исправление ошибок на диске.</span></p>
+  <p><span style='font-size:11.0pt;'>/V Вывод полного пути и имени для каждого 
+    из файлов на диске.</span></p>
+  <p><span style='font-size:11.0pt;'>Для проверки текущего диска следует запустить 
+    программу CHKDSK без параметров.</span></p>
+  <p><span style='font-size:11.0pt;'>Вместо команды CHKDSK в данном случае рекомендуется 
+    обратиться к программе </span></p>
+  <p><span style='font-size:11.0pt;'>SCANDISK. SCANDISK обладает более широкими 
+    возможностями по проверке диска и</span></p>
+  <p><span style='font-size:11.0pt;'>устранению возникших проблем.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="CLS">CLS</A> – Очистка экрана</span></i></b></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="COPY">COPY</A> - Копирование 
+    одного или нескольких файлов в другое место.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>COPY [/A | /B] источник [/A | /B] [+ источник 
+    [/A | /B] [+ ...]] [результат</span></p>
+  <p><span lang=EN-US style='font-size:11.0pt;'>[/A | /B]] [/V] [/Y | /-Y]</span></p>
+  <p><span style='font-size:11.0pt;'>источник Имя копируемого файла (файлов).</span></p>
+  <p><span style='font-size:11.0pt;'>/A Файл является текстовым файлом ASCII.</span></p>
+  <p><span style='font-size:11.0pt;'>/B Файл является двоичным.</span></p>
+  <p><span style='font-size:11.0pt;'>результат Каталог для размещения и/или имя 
+    создаваемого файла.</span></p>
+  <p><span style='font-size:11.0pt;'>/V Проверка правильности копирования путем 
+    сравнения файлов.</span></p>
+  <p><span style='font-size:11.0pt;'>/Y Отключение режима запроса подтверждения 
+    на замену файлов.</span></p>
+  <p><span style='font-size:11.0pt;'>/-Y Включение режима запроса подтверждения 
+    на замену файлов.</span></p>
+  <p><span style='font-size:11.0pt;'>Ключ /Y может быть установлен с помощью переменной 
+    среды COPYCMD.</span></p>
+  <p><span style='font-size:11.0pt;'>Ключ /-Y, заданный непосредственно в командной 
+    строке, имеет над ним приоритет.</span></p>
+  <p><span style='font-size:11.0pt;'>Чтобы объединить несколько файлов в один, 
+    необходимо указать единственный </span></p>
+  <p><span style='font-size:11.0pt;'>конечный файл и несколько исходных (путем 
+    использования подстановочных</span></p>
+  <p><span style='font-size:11.0pt;'>знаков или формата файл1+файл2+файл3).</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="DATE">DATE</A> - Вывод либо 
+    установка текущей даты.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>DATE [дата]</span></p>
+  <p><span style='font-size:11.0pt;'>Ввод DATE без параметров позволяет получить 
+    текущее значение даты и выдать </span></p>
+  <p><span style='font-size:11.0pt;'>запрос на ввод нового значения даты. </span></p>
+  <p><span style='font-size:11.0pt;'>Нажатие клавиши ENTER оставляет значение 
+    даты без изменения.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="DEL">DEL</A> – Удаление одного 
+    или нескольких файлов.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>DEL [диск:][путь]имя_файла [/P]</span></p>
+  <p><span style='font-size:11.0pt;'>ERASE [диск:][путь]имя_файла [/P]</span></p>
+  <p><span style='font-size:11.0pt;'>[диск:][путь]имя_файла Имя удаляемого файла 
+    (файлов). Для удаления сразу</span></p>
+  <p><span style='font-size:11.0pt;'>нескольких файлов используются подстановочные 
+    знаки.</span></p>
+  <p><span style='font-size:11.0pt;'>/P Выдача запросов при удалении каждого файла.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="DELTREE">DELTREE</A> – Удаление 
+    каталога вместе с подкаталогами и содержащимися в них файлами.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>Удаление одного или нескольких файлов и каталогов:</span></p>
+  <p><span style='font-size:11.0pt;'>DELTREE [/Y] [диск:]путь [[диск:]путь[...]]</span></p>
+  <p><span style='font-size:11.0pt;'>/Y Блокировка выдачи запросов на подтверждение</span></p>
+  <p><span style='font-size:11.0pt;'>удаления каталогов.</span></p>
+  <p><span style='font-size:11.0pt;'>[диск:]путь Имя удаляемого каталога.</span></p>
+  <p><span style='font-size:11.0pt;'>Замечание. Программу DELTREE следует использовать 
+    осторожно, так как</span></p>
+  <p><span style='font-size:11.0pt;'>удалены будут все файлы и каталоги, входящие 
+    в указанный каталог.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="DIR">DIR </A>– Вывод списка 
+    файлов и подкаталогов из указанного каталога.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>DIR [диск:][путь][имя_файла] [/P] [/W] [/A[[:]атрибуты]]</span></p>
+  <p><span style='font-size:11.0pt;'>[/O[[:]сортировка]] [/S] [/B] [/L] [/V]</span></p>
+  <p><span style='font-size:11.0pt;'>[диск:][путь][имя_файла]</span></p>
+  <p><span style='font-size:11.0pt;'>Диск, каталог и/или файлы, которые следует 
+    включить в список.</span></p>
+  <p><span style='font-size:11.0pt;'>(Может использоваться один или несколько 
+    образцов имен.)</span></p>
+  <p><span style='font-size:11.0pt;'>/P Пауза после заполнения каждого экрана.</span></p>
+  <p><span style='font-size:11.0pt;'>/W Вывод списка в несколько столбцов.</span></p>
+  <p><span style='font-size:11.0pt;'>/A Вывод файлов с заданными атрибутами.</span></p>
+  <p><span style='font-size:11.0pt;'>атрибуты D Каталоги R Доступные только для 
+    чтения</span></p>
+  <p><span style='font-size:11.0pt;'>H Скрытые файлы A Предназначенные для архивации</span></p>
+  <p><span style='font-size:11.0pt;'>S Системные файлы Префикс &quot;-&quot; имеет 
+    значение НЕ</span></p>
+  <p><span style='font-size:11.0pt;'>/O Сортировка списка отображаемых файлов.</span></p>
+  <p><span style='font-size:11.0pt;'>сортировка N по имени (алфавитная) S по размеру 
+    (начиная с меньших)</span></p>
+  <p><span style='font-size:11.0pt;'>E по расширению (алфавитная) D по дате (с 
+    более старых)</span></p>
+  <p><span style='font-size:11.0pt;'>G Начать список с каталогов Префикс &quot;-&quot; 
+    - обратный порядок</span></p>
+  <p><span style='font-size:11.0pt;'>A по дате загрузки (начиная с более старых)</span></p>
+  <p><span style='font-size:11.0pt;'>/S Вывод списка файлов из заданного каталога 
+    и его подкаталогов.</span></p>
+  <p><span style='font-size:11.0pt;'>/B Вывод только имен файлов.</span></p>
+  <p><span style='font-size:11.0pt;'>/L Использование нижнего регистра.</span></p>
+  <p><span style='font-size:11.0pt;'>/V Отображение расширенных сведений о файлах 
+    и каталогах.</span></p>
+  <p><span style='font-size:11.0pt;'>Ключи могут быть установлены с помощью переменной 
+    среды DIRCMD. Чтобы отменить</span></p>
+  <p><span style='font-size:11.0pt;'>их действие, в командную строку следует поместить 
+    те же ключи с префиксом &quot;-&quot;.</span></p>
+  <p><span style='font-size:11.0pt;'>Пример: /-W.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="ECHO">ECHO </A>– Вывод сообщений 
+    и переключение режима отображения команд на экране.</span></i></b></p>
+  <p><span lang=EN-US style='font-size:11.0pt;'>ECHO [ON | OFF]</span></p>
+  <p><span style='font-size:11.0pt;'>ECHO [сообщение]</span></p>
+  <p><span style='font-size:11.0pt;'>Ввод ECHO без параметров позволяет выяснить 
+    текущий режим отображения команд.</span></p>
+  <p><b><span lang=EN-US style='font-size:11.0pt;'><A NAME="ERASE">ERASE</A> – 
+    </span></b><b><span style='font-size:11.0pt;
+'>см</span></b><b><span lang=EN-US style='font-size:
+11.0pt;'>. DEL.</span></b><span
+lang=EN-US style='font-size:11.0pt;'></span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="FC">FC</A> – Сравнение двух 
+    файлов или двух наборов файлов и вывод различий между ними.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>FC [/A] [/C] [/L] [/LBn] [/N] [/T] [/W] [/nnnn] 
+    [диск1:][путь1]имя_файла1</span></p>
+  <p><span style='font-size:11.0pt;'>[диск2:][путь2]имя_файла2</span></p>
+  <p><span style='font-size:11.0pt;'>FC /B [диск1:][путь1]имя_файла1 [диск2:][путь2]имя_файла2</span></p>
+  <p><span style='font-size:11.0pt;'>/A Вывод только первой и последней строк 
+    для каждой группы различий.</span></p>
+  <p><span style='font-size:11.0pt;'>/B Сравнение двоичных файлов.</span></p>
+  <p><span style='font-size:11.0pt;'>/C Игнорирование регистра символов.</span></p>
+  <p><span style='font-size:11.0pt;'>/L Сравнение файлов в формате ASCII.</span></p>
+  <p><span style='font-size:11.0pt;'>/LBn Максимальное число несоответствий</span></p>
+  <p><span style='font-size:11.0pt;'>для заданного числа строк.</span></p>
+  <p><span style='font-size:11.0pt;'>/N Вывод номеров строк при сравнении текстовых 
+    файлов ASCII.</span></p>
+  <p><span style='font-size:11.0pt;'>/T Символы табуляции не заменяются эквивалентным 
+    числом пробелов.</span></p>
+  <p><span style='font-size:11.0pt;'>/W При сравнении пробелы и символы табуляции 
+    игнорируются.</span></p>
+  <p><span style='font-size:11.0pt;'>/nnnn Число последовательных совпадающих 
+    строк,</span></p>
+  <p><span style='font-size:11.0pt;'>которое должно встретиться после группы несовпадающих.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="MD">MD</A> - Создание каталога.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>MKDIR [диск:]путь</span></p>
+  <p><span style='font-size:11.0pt;'>MD [диск:]путь</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="MKDIR">MKDIR </A>– см MD</span></i></b></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="MORE">MORE</A> – Последовательный 
+    вывод данных по частям размером в один экран.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>MORE [диск:][путь]имя_файла</span></p>
+  <p><span style='font-size:11.0pt;'>MORE &lt; [диск:][путь]имя_файла</span></p>
+  <p><span style='font-size:11.0pt;'>имя_команды | MORE [диск:][путь][имя_файла]</span></p>
+  <p><span style='font-size:11.0pt;'>[диск:][путь]имя_файла Задает файлы, отображаемые 
+    по фрагментам</span></p>
+  <p><span style='font-size:11.0pt;'>имя_команды Команда, вывод которой отображается 
+    на экране.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="MOVE">MOVE </A>– Перемещение 
+    файлов и переименование файлов и каталогов.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>Перемещение одного или более файлов:</span></p>
+  <p><span style='font-size:11.0pt;'>MOVE [/Y | /-Y] [диск:][путь]имя_файла1[,...] 
+    конечный_файл</span></p>
+  <p><span style='font-size:11.0pt;'>Переименование каталога:</span></p>
+  <p><span style='font-size:11.0pt;'>MOVE [/Y | /-Y] [диск:][путь]каталог1 каталог2</span></p>
+  <p><span style='font-size:11.0pt;'>[диск:][путь]имя_файла1 Размещение и имя 
+    перемещаемого</span></p>
+  <p><span style='font-size:11.0pt;'>файла либо файлов.</span></p>
+  <p><span style='font-size:11.0pt;'>конечный_файл Новое размещение файла. Может 
+    включать</span></p>
+  <p><span style='font-size:11.0pt;'>имя диска, двоеточие, имя каталога,</span></p>
+  <p><span style='font-size:11.0pt;'>либо их комбинацию. Если перемещается только 
+    один</span></p>
+  <p><span style='font-size:11.0pt;'>файл, допускается указать его новое имя</span></p>
+  <p><span style='font-size:11.0pt;'>Это позволяет сразу переместить и переименовать 
+    файл.</span></p>
+  <p><span style='font-size:11.0pt;'>[диск:][путь]каталог1 Каталог, который следует 
+    переименовать.</span></p>
+  <p><span style='font-size:11.0pt;'>каталог2 Новое имя каталога.</span></p>
+  <p><span style='font-size:11.0pt;'>/Y Отказ от запросов подтверждения при создании 
+    каталогов</span></p>
+  <p><span style='font-size:11.0pt;'>и замене файлов.</span></p>
+  <p><span style='font-size:11.0pt;'>/-Y Выдача запросов на подтверждение при 
+    создании каталогов</span></p>
+  <p><span style='font-size:11.0pt;'>и замене файлов.</span></p>
+  <p><span style='font-size:11.0pt;'>Ключ /Y может быть установлен с помощью переменной 
+    среды COPYCMD.</span></p>
+  <p><span style='font-size:11.0pt;'>Ключ /-Y в командной строке имеет над ним 
+    приоритет.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="RD">RD</A> – Удаление каталога.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>RMDIR [диск:]путь</span></p>
+  <p><span style='font-size:11.0pt;'>RD [диск:]путь</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="RENAME">RENAME</A> – Переименование 
+    файлов и каталогов.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>RENAME [диск:][путь][каталог1 | имя_файла1] 
+    [каталог2 | имя_файла2]</span></p>
+  <p><span style='font-size:11.0pt;'>REN [диск:][путь][каталог1 | имя_файла1] 
+    [каталог2 | имя_файла2]</span></p>
+  <p><span style='font-size:11.0pt;'>Указать другой диск или каталог для конечного 
+    файла/каталога нельзя.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="RMDIR">RMDIR </A>– Удаление 
+    каталога.</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>RMDIR [диск:]путь</span></p>
+  <p><span style='font-size:11.0pt;'>RD [диск:]путь</span></p>
+  <p><b><i><span style='font-size:11.0pt;'><A NAME="SORT">SORT</A> – Сортировка 
+    ввода с выводом результатов в файл, на экран или другое устройство</span></i></b></p>
+  <p><span style='font-size:11.0pt;'>SORT [/R] [/+n] [[диск1:][путь1]имя_файла1] 
+    [&gt; [диск2:][путь2]имя_файла2]</span></p>
+  <p><span style='font-size:11.0pt;'>[команда |] SORT [/R] [/+n] [&gt; [диск2:][путь2]имя_файла2]</span></p>
+  <p><span style='font-size:11.0pt;'>/R Изменение порядка сортировки на обратный,</span></p>
+  <p><span style='font-size:11.0pt;'>от Z к A и затем от 9 до 0.</span></p>
+  <p><span style='font-size:11.0pt;'>/+n Сортировка файла по символам</span></p>
+  <p><span style='font-size:11.0pt;'>в столбце n.</span></p>
+  <p><span style='font-size:11.0pt;'>[диск1:][путь1]имя_файла1 Сортируемые файлы</span></p>
+  <p><span style='font-size:11.0pt;'>[диск2:][путь2]имя_файла2 Файл, в который 
+    направляется</span></p>
+  <p><span style='font-size:11.0pt;'>сортированный ввод.</span></p>
+  <p><span style='font-size:11.0pt;'>команда Команда, вывод которой следует отсортировать.</span></p>
+  <p><b><i><span style='font-size:11.0pt;'>Для получения краткой информации о 
+    соответствующей команде следует вызвать любую команду с параметром /?.</span></i></b><span style='font-size:11.0pt;'></span><b><span
+lang=EN-US style='font-size:14.0pt;'> &nbsp; </span></b></p>
+</body>
+</html>

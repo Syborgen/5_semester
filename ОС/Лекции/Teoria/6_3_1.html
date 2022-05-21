@@ -1,0 +1,865 @@
+<html>
+<body lang=RU style='tab-interval:35.4pt'>
+
+<h1 align="center">Подсистема управления процессами</h1>
+
+<p>Сердцем операционной системы UNIX является подсистема управления процессами. 
+Практически все действия ядра имеют отношение к процес­сам, будь то обслуживание 
+системного вызова, генерация сигнала, разме­щение памяти, обработка особых 
+ситуаций, вызванных выполнением про­цесса или обеспечением услуг ввода/вывода по 
+запросу прикладного про­цесса.</p>
+
+<p>Вся функциональность операционной системы в конечном счете опреде­ляется 
+выполнением тех или иных процессов. Даже так называемые уровни выполнения 
+системы (run levels) представляют собой ни что иное, как удоб­ную форму 
+определения группы выполняющихся процессов. Возможность терминального или 
+сетевого доступа к системе, различные сервисы, тра­диционные для UNIX, — система 
+печати, удаленные архивы FTP, элек­тронная почта и система телеконференций 
+(news) — все это результат вы­полнения определенных процессов.</p>
+
+<p>В этой главе рассматриваются вопросы: что такое процесс в представлении 
+операционной системы, каковы связанные с ним структуры данных, по­зволяющие UNIX 
+осуществлять управление процессом, а также описыва­ется жизненный цикл процесса 
+— от его создания до прекращения выпол­нения.</p>
+
+<p>Процессы в UNIX неотъемлемо связаны с двумя важнейшими ресурсами системы — 
+процессором (или процессорами) и оперативной памятью. Как правило, этих ресурсов 
+никогда не бывает "много", и в операционной сис­теме происходит активная 
+конкурентная борьба за право обладания про­цессором и памятью. Мы рассмотрим 
+принципы организации и управле-Чия памятью, т. к. даже при самом умеренном 
+объеме физической памяти адресное пространство процесса составляет несколько 
+гигабайт! Мы также \ подробно остановимся на том, как операционная система 
+планирует вы­полнение процессов — ведь в каждый момент времени в 
+однопроцессорной системе UNIX может выполняться не более одного процесса. UNIX 
+является многозадачной системой общего назначения, поэтому задача справедливого 
+распределения этого ресурса между задачами различного класса и с различными 
+требованиями является нетривиальной.</p>
+
+<p>Мы познакомимся с тем, как создаются новые процессы и запускаются новые 
+программы (из предыдущих глав вы помните, что это не одно и то же). По существу 
+процесс является "рамкой", в которую необходимо вста вить "картину" или 
+"фотографию"   - некоторую прикладную программу. В этой главе рассматриваются 
+важные этапы жизни процесса, такие как сон и пробуждение, переключение 
+контекста, связанного со сменой задачи завершение его выполнения.</p>
+
+<p>Последние разделы главы посвящены взаимодействию между процессами Хотя основной 
+задачей операционной системы является изоляция отдель­ного процесса от 
+остальных, время от времени процессам все же требуется обмениваться данными. Для 
+этого UNIX предлагает широкий спектр средств - от элементарного механизма 
+сигналов до сложных подсистем межпроцессного взаимодействия — IPC UNIX System V 
+и сокетов BSD.</p>
+
+<h1 align="center">Основы управления процессом</h1>
+
+<p>Уже говорилось, что процесс UNIX представляет собой исполняемый об­раз 
+программы, включающий отображение в памяти исполняемого файла, полученного в 
+результате компиляции, стек, код и данные библиотек, а также ряд структур данных 
+ядра, необходимых для управления процессом. На рис. 3.1 схематически 
+представлены компоненты, необходимые для создания и выполнения процесса.
+Процесс во время выполнения использует различные системные ресурсы -память, 
+процессор, услуги файловой подсистемы и подсистемы вво­да/вывода. Операционная 
+система UNIX обеспечивает иллюзию одновре­менного выполнения нескольких 
+процессов, эффективно распределяя сис­темные ресурсы между активными процессами 
+и не позволяя в то же время ни одному из них монополизировать использование этих 
+ресурсов.</p>
+
+<p>Новорожденная операционная система UNIX обеспечивала выполнение всего двух 
+процессов, по одному на каждый подключенный к PDP-7 тер­минал. Спустя год, на 
+той же PDP-7 число процессов заметно увеличи­лось, появился системный вызов 
+fork(2). В Первой редакции UNIX поя­вился вызов ехес(2), но операционная система 
+по-прежнему позволяла размещать в памяти только один процесс в каждый момент 
+времени. По­сле реализации аппаратной подсистемы управления памятью на PDP-11 
+операционная система была модифицирована, что позволило загружать в память сразу 
+несколько процессов, уменьшая тем самым время на сохра­нение образа процесса во 
+вторичной памяти (на диске) и считывание его, когда процесс продолжал 
+выполнение. Однако до 1972 года UNIX нельзя было назвать действительно 
+многозадачной системой, т. к. операции вво­да/вывода оставались синхронными, и 
+другие процессы не могли выпол­няться, пока их "коллега" не завершал операцию 
+ввода/вывода (обычно достаточно продолжительную). Истинная многозадачность 
+появилась только после того, как код UNIX был переписан на языке С в 1973 году. 
+С тех пор основы управления процессами практически не изменились.</p>
+
+<img width=470 height=355 src="2Part1.files/image002.jpg">
+<p>Рис. 3.1. Инфраструктура процесса операционной системы UNIX</p>
+
+<p>Выполнение процесса может происходить в двух режимах — в режиме ядра (kernel 
+mode) или в режиме задачи (user mode). В режиме задачи процесс выполняет 
+инструкции прикладной программы, допустимые на неприви­легированном уровне 
+защиты процессора. При этом процессу недоступны системные структуры данных. 
+Когда процессу требуется получение каких-либо услуг ядра, он делает системный 
+вызов, который выполняет инструк­ции ядра, находящиеся на привилегированном 
+уровне. Несмотря на то что выполняются инструкции ядра, это происходит от имени 
+процесса, сде­лавшего системный вызов. Выполнение процесса при этом переходит в 
+режим ядра. Таким образом ядро системы защищает собственное адресное 
+пространство от доступа прикладного процесса, который может нарушить Целостность 
+структур данных ядра и привести к разрушению операцион­ной системы. Более того, 
+часть процессорных инструкций, например, из­менение регистров, связанных с 
+управлением памятью, могут быть выпол­нены только в режиме ядра.</p>
+
+<p>Соответственно и образ процесса состоит из двух частей: данных режима ядра и 
+режима задачи. Образ процесса в режиме задачи состоит из сегмента кода, данных, 
+стека, библиотек и других структур данных, к которым он может получить 
+непосредственный доступ. Образ процесса в режиме ядра состоит из структур 
+данных, недоступных процессу в режиме задачи, кото­рые используются ядром для 
+управления процессом. Сюда относятся дан­ные, диктуемые аппаратным уровнем, 
+например состояния регистров, таб­лицы для отображения памяти и т. д., а также 
+структуры данных, необхо­димые ядру для обслуживания процесса. Вообще говоря, в 
+режиме ядра процесс имеет доступ к любой области памяти.</p>
+
+<h1 align="center">Структуры данных процесса</h1>
+
+<p>Каждый процесс представлен в системе двумя основными структурами
+данных      ргос и user, описанными, соответственно, в файлах
+<sys/proc.h> и <sys/user.h>. Содержимое и формат этих структур различ­ны для 
+разных версий UNIX. В табл. 3.1 приведены некоторые поля структуры ргос в SCO 
+UNIX, позволяющие проиллюстрировать информа­цию, необходимую ядру, для 
+управления процессом.</p>
+
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0
+ style='margin-left:2.0pt;border-collapse:collapse;mso-padding-alt:0cm 2.0pt 0cm 2.0pt'>
+ <tr style='mso-yfti-irow:0;height:23.5pt'>
+  <td width=115 valign=top style='width:85.9pt;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:23.5pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.6pt;mso-ansi-language:
+  EN-US'>char</span><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:23.5pt'>
+  <p class=Normal style='margin-left:1.2pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.45pt;mso-ansi-language:EN-US'>p_stat</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:23.5pt'>
+  <p class=Normal style='margin-top:0cm;margin-right:1.7pt;margin-bottom:0cm;
+  margin-left:.5pt;margin-bottom:.0001pt;text-indent:-.25pt;background:white'><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.1pt'>Состояние процесса (выполнение, приостановлен, </span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.05pt'>сон и т. д.)</span><span style='font-size:13.0pt;mso-bidi-font-size:
+  10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1;height:15.35pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.6pt;mso-ansi-language:
+  EN-US'>char</span><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:1.2pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.05pt;mso-ansi-language:EN-US'>p_pri</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:.5pt;background:white'><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black'>Текущий
+  приоритет процесса</span><span style='font-size:13.0pt;mso-bidi-font-size:
+  10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:2;height:26.4pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:26.4pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.4pt;mso-ansi-language:
+  EN-US'>unsigned<span style='mso-spacerun:yes'>   </span>int</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:26.4pt'>
+  <p class=Normal style='margin-left:1.2pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.4pt;mso-ansi-language:EN-US'>p_flag</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:26.4pt'>
+  <p class=Normal style='margin-top:0cm;margin-right:1.2pt;margin-bottom:0cm;
+  margin-left:.7pt;margin-bottom:.0001pt;text-indent:-.25pt;background:white'><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.15pt'>Флаги,<span style='mso-spacerun:yes'>   </span>определяющие<span
+  style='mso-spacerun:yes'>   </span>дополнительную<span
+  style='mso-spacerun:yes'>   </span>инфор-</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt;color:black;letter-spacing:.05pt'>мацию о состоянии
+  процесса</span><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:3;height:15.35pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.3pt;mso-ansi-language:
+  EN-US'>unsigned<span style='mso-spacerun:yes'>  </span>short</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:1.2pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.3pt;mso-ansi-language:EN-US'>p_uid</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:.7pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.1pt;mso-ansi-language:EN-US'>UID </span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.1pt'>процесса</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:4;height:15.35pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.5pt;mso-ansi-language:
+  EN-US'>unsigned<span style='mso-spacerun:yes'>   </span>short</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:1.2pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.7pt;mso-ansi-language:EN-US'>p_suid</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:.95pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.1pt;mso-ansi-language:EN-US'>EUID </span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.1pt'>процесса</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:5;height:15.35pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;mso-ansi-language:EN-US'>int</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:1.2pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.2pt;mso-ansi-language:EN-US'>p_sid</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:.95pt;background:white'><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.05pt'>Идентификатор сеанса</span><span style='font-size:13.0pt;mso-bidi-font-size:
+  10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:6;height:26.4pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:26.4pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.15pt;
+  mso-ansi-language:EN-US'>short</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:26.4pt'>
+  <p class=Normal style='margin-left:1.2pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.75pt;mso-ansi-language:EN-US'>p_pgrp</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:26.4pt'>
+  <p class=Normal style='margin-top:0cm;margin-right:1.2pt;margin-bottom:0cm;
+  margin-left:.5pt;margin-bottom:.0001pt;background:white'><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  .05pt'>Идентификатор группы<span style='mso-spacerun:yes'> 
+  </span>процессов<span style='mso-spacerun:yes'>  </span>(равен<span
+  style='mso-spacerun:yes'>  </span>иден-</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt;color:black'>тификатору лидера группы)</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:7;height:15.35pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.15pt;
+  mso-ansi-language:EN-US'>short</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:1.45pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.45pt;mso-ansi-language:EN-US'>p_pid</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:1.2pt;background:white'><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.1pt'>Идентификатор процесса (Р</span><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.1pt;mso-ansi-language:
+  EN-US'>ID</span><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt;
+  color:black;letter-spacing:-.1pt'>)</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:8;height:15.85pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.85pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.15pt;
+  mso-ansi-language:EN-US'>short</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.85pt'>
+  <p class=Normal style='margin-left:1.45pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.55pt;mso-ansi-language:EN-US'>p_ppid</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.85pt'>
+  <p class=Normal style='margin-left:1.2pt;background:white'><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.05pt'>Идентификатор родительского процесса </span><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.05pt;mso-ansi-language:EN-US'>(PPID)</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:9;height:15.35pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.15pt;
+  mso-ansi-language:EN-US'>sigset_t</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:1.2pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.3pt;mso-ansi-language:EN-US'>p_sig</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:.7pt;tab-stops:lined 222.5pt;background:
+  white'><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black'>Сигналы,
+  ожидающие доставки</span><span style='font-size:13.0pt;mso-bidi-font-size:
+  10.0pt;color:black;mso-ansi-language:EN-US'> </span><span style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt'><span style='mso-spacerun:yes'> </span><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:10;height:15.35pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.4pt;mso-ansi-language:
+  EN-US'>unsigned<span style='mso-spacerun:yes'>   </span>int</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:1.45pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.3pt;mso-ansi-language:EN-US'>p_size</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:1.2pt;background:white'><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.45pt'>Размер адресного пространства процесса в страницах</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:11;height:15.85pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.85pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.5pt;mso-ansi-language:
+  EN-US'>time_t</span><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt'>
+  <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.85pt'>
+  <p class=Normal style='margin-left:1.45pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.5pt;mso-ansi-language:EN-US'>p_utime</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.85pt'>
+  <p class=Normal style='margin-left:1.2pt;tab-stops:lined 222.7pt;background:
+  white'><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;
+  letter-spacing:-.05pt'>Время выполнения в режиме задачи </span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'><span
+  style='mso-spacerun:yes'> </span><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:12;height:15.35pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.5pt;mso-ansi-language:
+  EN-US'>time_t</span><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt'>
+  <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:1.7pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.75pt;mso-ansi-language:EN-US'>p_stime</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:1.45pt;tab-stops:lined 222.7pt;background:
+  white'><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;
+  letter-spacing:-.05pt'>Время выполнения в режиме ядра </span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'><span
+  style='mso-spacerun:yes'> </span><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:13;height:15.35pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.6pt;mso-ansi-language:
+  EN-US'>caddr_t</span><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt'>
+  <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:1.7pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  .15pt;mso-ansi-language:EN-US'>p_ldt</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:.95pt;tab-stops:lined 222.95pt;background:
+  white'><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black'>Указатель
+  на </span><span lang=EN-US style='font-size:13.0pt;mso-bidi-font-size:10.0pt;
+  color:black;mso-ansi-language:EN-US'>LDT </span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt;color:black'>процесса</span><span style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;mso-ansi-language:EN-US'> </span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'><span
+  style='mso-spacerun:yes'> </span><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:14;height:14.9pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:14.9pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.1pt;mso-ansi-language:
+  EN-US'>struct<span style='mso-spacerun:yes'>   </span>pregion</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:14.9pt'>
+  <p class=Normal style='margin-left:2.4pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.2pt;mso-ansi-language:EN-US'>*p_region</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='margin-left:1.2pt;tab-stops:lined 222.95pt;background:
+  white'><span style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black'>Список
+  областей памяти процесса</span><span style='font-size:13.0pt;mso-bidi-font-size:
+  10.0pt;color:black;mso-ansi-language:EN-US'> </span><span style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt'><span style='mso-spacerun:yes'> </span><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:15;height:14.9pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:14.9pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.15pt;
+  mso-ansi-language:EN-US'>short</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:14.9pt'>
+  <p class=Normal style='margin-left:1.7pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.05pt;mso-ansi-language:EN-US'>p_xstat</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='margin-left:1.7pt;background:white'><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.15pt'>Код возврата, передаваемый родительскому процессу</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:16;height:14.9pt'>
+  <td width=115 valign=top style='width:85.9pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:14.9pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.4pt;mso-ansi-language:
+  EN-US'>unsigned<span style='mso-spacerun:yes'>   </span>int</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=81 valign=top style='width:60.95pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:14.9pt'>
+  <p class=Normal style='margin-left:1.7pt;background:white'><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  -.05pt;mso-ansi-language:EN-US'>p_utbl </span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt;color:black;letter-spacing:-.05pt'>[]</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+  <td width=400 colspan=2 valign=top style='width:299.7pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='margin-left:1.45pt;background:white'><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  .15pt'>Массив записей таблицы страниц для </span><span lang=EN-US
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;letter-spacing:
+  .15pt;mso-ansi-language:EN-US'>u</span><span style='font-size:13.0pt;
+  mso-bidi-font-size:10.0pt;color:black;letter-spacing:.15pt'>-</span><span
+  lang=EN-US style='font-size:13.0pt;mso-bidi-font-size:10.0pt;color:black;
+  letter-spacing:.15pt;mso-ansi-language:EN-US'>area</span><span
+  style='font-size:13.0pt;mso-bidi-font-size:10.0pt'> <o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:17;mso-yfti-lastrow:yes;height:9.6pt;mso-row-margin-right:
+  14.2pt'>
+  <td width=576 colspan=3 valign=top style='width:432.35pt;border:none;
+  mso-border-top-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p class=Normal style='background:white'><o:p>&nbsp;</o:p></p>
+  </td>
+  <td style='mso-cell-special:placeholder;border:none;padding:0cm 0cm 0cm 0cm'
+  width=19><p class='MsoNormal'>&nbsp;</td>
+ </tr>
+ <![if !supportMisalignedColumns]>
+ <tr height=0>
+  <td width=115 style='border:none'></td>
+  <td width=81 style='border:none'></td>
+  <td width=381 style='border:none'></td>
+  <td width=19 style='border:none'></td>
+ </tr>
+ <![endif]>
+</table>
+
+ 
+<p>В любой момент времени данные структур ргос для всех процессов долж-ны 
+присутствовать в памяти, хотя остальные структуры данных, включая образ 
+процесса, могут быть перемещены во вторичную память, — область свопинга. Это 
+позволяет ядру иметь под рукой минимальную информа­цию, необходимую для 
+определения местонахождения остальных данных, относящихся к процессу, даже если 
+они отсутствуют в памяти.</p>
+
+<p>Структура ргос является записью системной таблицы процессов, которая, как мы 
+только что заметили, всегда находится в оперативной памяти. За­пись этой таблицы 
+для выполняющегося в настоящий момент времени процесса адресуется системной 
+переменной curproc. Каждый раз при пе­реключении контекста, когда ресурсы 
+процессора передаются другому процессу, соответственно изменяется значение 
+переменной curproc, ко­торая теперь указывает на структуру ргос активного 
+процесса.</p>
+
+<p>Вторая упомянутая структура — user, также называемая u-area или u block, 
+содержит дополнительные данные о процессе, которые требуются ядру только во 
+время выполнения процесса (т. е. когда процессор выполняет инструкции процесса в 
+режиме ядра или задачи). В отличие от структуры ргос, адресованной указателем 
+curproc, данные user размещаются (точнее, отображаются) в определенном месте 
+виртуальной памяти ядра и адресуются переменной и. На рис. 3.2 показаны две 
+основные структуры данных процесса и способы их адресации ядром UNIX.</p>
+
+<p>В u-area хранятся данные, которые используются многими подсистемами ядра и не 
+только для управления процессом. В частности, там содержится информация об 
+открытых файловых дескрипторах, диспозиция сигналов, статистика выполнения 
+процесса, а также сохраненные значения регист­ров, когда выполнение процесса 
+приостановлено. Очевидно, что процесс не должен иметь возможности модифицировать 
+эти данные произвольным образом, поэтому u-area защищена от доступа в режиме 
+задачи.</p>
+
+<img width=470 height=355 src="2Part1.files/image004.jpg">
+
+<p>Как видно из рис. 3.2, u-area также содержит стек фиксированного разме-- 
+системный стек или стек ядра (kernel stack). При выполнении про­цесса в режиме 
+ядра операционная система использует этот стек, а не обычный стек процесса.</p>
+
+<h1 align="center">Состояния процесса</h1>
+
+<p>Жизненный цикл процесса может быть разбит на несколько состояний. Переход 
+процесса из одного состояния в другое происходит в зависимости от наступления 
+тех или иных событий в системе. На рис. 3.3 показаны со­стояния, в которых 
+процесс может находиться с момента создания до за­вершения выполнения.</p>
+
+<p>1.       Процесс выполняется в режиме задачи. При этом процессором выпол­
+няются прикладные инструкции данного процесса.</p>
+<p>2.       Процесс выполняется в режиме ядра. При этом процессором выпол­
+няются системные инструкции ядра операционной системы от имени
+процесса.</p>
+<p>3.      Процесс не выполняется, но готов к запуску, как только планировщик
+выберет его (состояние runnable). Процесс находится в очереди на вы­
+полнение и обладает всеми необходимыми ему ресурсами, кроме вы­
+числительных.</p>
+<p>4.      Процесс находится в состоянии сна (asleep), ожидая недоступного в
+данный    момент   ресурса,    например    завершения    операции    вво­
+да/вывода.</p>
+<p>5.      Процесс возвращается из режима ядра в режим задачи, но ядро пре­
+рывает его и производит переключение контекста для запуска более
+высокоприоритетного процесса.</p>
+<p>6.      Процесс только что создан вызовом fork(2) и находится в переходном
+состоянии: он существует, но не готов к запуску и не находится в со­
+стоянии сна.</p>
+<p>7.      Процесс выполнил системный вызов exit(2) и перешел в состояние
+зомби (zombie, defunct). Как такового процесса не существует, но ос­
+таются записи, содержащие код возврата и временную статистику его
+выполнения, доступную для родительского процесса. Это состояние
+является конечным в жизненном цикле процесса.</p>
+
+<img width=470 height=355 src="2Part1.files/image006.jpg">
+
+<p>      Необходимо отметить, что не все процессы проходят через все множество 
+      состояний, приведенных выше.</p>
+
+<p>Процесс начинает свой жизненный путь с состояния 6, когда родитель­ский процесс 
+выполняет системный вызов fork(2). После того как создание процесса полностью 
+завершено, процесс завершает "дочернюю часть" вы­зова fork(2) и переходит в 
+состояние 3 готовности к запуску, ожидая своей очереди на выполнение. Когда 
+планировщик выбирает процесс для вы­полнения, он переходит в состояние 1 и 
+выполняется в режиме задачи.</p>
+
+<p>Выполнение в режиме задачи завершается в результате системного вызова или 
+прерывания, и процесс переходит в режим ядра, в котором выполня­ется код 
+системного вызова или прерывания. После этого процесс опять может вернуться в 
+режим задачи. Однако во время выполнения системного вызова в режиме ядра 
+процессу может понадобиться недоступный в дан­ный момент ресурс. Для ожидания 
+доступа к такому ресурсу, процесс вы­зывает функцию ядра sleep () и переходит в 
+состояние сна (4). При этом процесс добровольно освобождает вычислительные 
+ресурсы, которые пре­доставляются следующему наиболее приоритетному процессу. 
+Когда ре­сурс становится доступным, ядро "пробуждает процесс", используя 
+функ­цию wakeup (), помещает его в очередь на выполнение, и процесс перехо­дит в 
+состояние "готов к запуску"(3).</p>
+
+<p>При предоставлении процессу вычислительных ресурсов происходит пере­ключение 
+контекста (context switch), в результате которого сохраняется об­раз, или 
+контекст, текущего процесса, и управление передается новому. Переключение 
+контекста может произойти, например, если процесс пе­решел в состояние сна, или 
+если в состоянии готовности к запуску нахо­дится процесс с более высоким 
+приоритетом, чем текущий. В последнем случае ядро не может немедленно прервать 
+текущий процесс и произвести переключение контекста. Дело в том, что 
+переключению контекста при выполнении в режиме ядра может привести к нарушению 
+целостности са­мой системы. Поэтому переключение контекста откладывается до 
+момента перехода процесса из режима ядра в режим задачи, когда все системные 
+операции завершены, и структуры данных ядра находятся в нормальном состоянии.
+Таким образом, после того как планировщик выбрал процесс на запуск, по­следний 
+начинает свое выполнение в режиме ядра, где завершает переклю­чение контекста. 
+Дальнейшее состояние процесса зависит от его предысто­рии: если процесс был 
+только что создан или был прерван, возвращаясь в режим задачи, он немедленно 
+переходит в этот режим. Если процесс начи­нает выполнение после состояния сна, 
+он продолжает выполняться в режи­ме ядра, завершая системный вызов. Заметим, что 
+такой процесс может быть прерван после завершения системного вызова в момент 
+перехода из режима ядра в режим задачи, если в очереди существует более 
+высокопри­оритетный процесс.</p>
+
+<p>В UNIX 4.xBSD определены дополнительные состояния процесса, в пер­вую очередь 
+связанные с системой управления заданиями и взаимодействием процесса с 
+терминалом. Процесс может быть переведен в состояние "остановлен" с помощью 
+сигналов останова SIGSTOP, sigttin или sigttou. В отличие от других сигналов, 
+которые обрабатываются только для выполняющегося процесса, отправление этих 
+сигналов приводит к немедленному изменению состояния процесса1. В этом случае, 
+если про­цесс выполняется или находится в очереди на запуск, его состояние изме^ 
+няется на "остановлен". Если же процесс находился в состоянии сна, его состояние 
+изменится на "остановлен в состоянии сна". Выход из этих со­стояний 
+осуществляется сигналом продолжения SIGCONT, при этом из со­стояния "остановлен" 
+процесс переходит в состояние "готов к запуску", а для процесса, остановленного 
+в состоянии сна, следующим пунктом на­значения является продолжение "сна". 
+Описанные возможности полностью реализованы и в SVR4.</p>
+
+<p>Наконец, процесс выполняет системный вызов exit(2) и заканчивает свое 
+выполнение. Процесс может быть также завершен вследствие получения сигнала. В 
+обоих случаях ядро освобождает ресурсы, принадлежавшие процессу, за исключением 
+кода возврата и статистики его выполнения, и переводит процесс в состояние 
+"зомби". В этом состоянии процесс нахо­дится до тех пор, пока родительский 
+процесс не выполнит один из сис­темных вызовов wait(2), после чего вся 
+информация о процессе будет уничтожена, а родитель получит код возврата 
+завершившегося процесса.</p>
+
+Принципы управления памятью
+
+<p>Одной из основных функций операционной системы является эффектив­ное управление 
+памятью. Оперативная память, или основная память, или память с произвольным 
+доступом (Random Access Memory, RAM) является достаточно дорогостоящим ресурсом. 
+Время доступа к оперативной памяти составляет всего несколько циклов процессора, 
+поэтому работа с данными, находящимся в памяти, обеспечивает максимальную 
+производительность. К сожалению, данный ресурс, как правило, ограничен. В 
+большей степени это справедливо для многозадачной операционной системы общего 
+назна­чения, каковой является UNIX. Поэтому данные, которые не могут быть 
+размещены в оперативной памяти, располагаются на вторичных устройст­вах 
+хранения, или во вторичной памяти, роль которой обычно выполняют дисковые 
+накопители. Время доступа ко вторичной памяти на несколько порядков превышает 
+время доступа к оперативной памяти и требует активного содействия операционной 
+системы. </p>
+
+<h1 align="center">Подсистема управления</h1>
+
+<p>Существует исключение из этого правила, касающееся процессов, находящихся в 
+состоя­нии сна для низкоприоритетного события, т. е. события, вероятность 
+наступления кото­рого относительно мала (например, ввода с клавиатуры, который 
+может и не наступить). В этом случае отправление процессу сигнала приведет к его 
+пробуждению. Более подроб­но этот случай рассмотрен в разделе "Сигналы" этой 
+главы.</p>
+ 
+<p>памятью UNIX отвечает за справедливое и эффективное распределение разделяемого 
+ресурса оперативной памяти между процессами и за обмен данными между оперативной 
+и вторичной памятью. Часть операций про изводится аппаратно устройством 
+управления памятью (Memory Management Unit, MMU) процессора под управлением 
+операционной сиc темы, чем достигается требуемое быстродействие.
+Примитивное управление памятью значительно уменьшает функциональ ность 
+операционной системы. Такие системы,  как правило,  позволяют загрузить в 
+заранее определенное место в оперативной памяти единствен ную задачу и передать 
+ей управление. При этом задача получает в своем распоряжение все ресурсы 
+компьютера (разделяя их, разумеется, с опера ционной системой), а адреса, 
+используемые задачей, являются физически-ми адресами оперативной памяти. Такой 
+способ запуска и выполнения одной программы безусловно является наиболее быстрым 
+и включает ми-нимальные накладные расходы.</p>
+
+<p>Этот подход часто используется в специализированных микропроцессор-ных системах, 
+однако практически неприменим в операционных системах общего назначения, какой 
+является UNIX. Можно сформулировать ряд возможностей, которые должна 
+обеспечивать подсистема управления па­мятью современной многозадачной 
+операционной системы:</p>
+<p>- Выполнение задач, размер которых превышает размер оперативной памяти.</p>
+<p>- Выполнение частично загруженных в память задач для минимизации времени их 
+запуска.</p>
+<p>- Размещение нескольких задач в памяти одновременно для повыше­ния эффективности 
+использования процессора.</p>
+<p>-   Размещение задачи в произвольном месте оперативной памяти.</p>
+<p>- Размещение задачи в нескольких различных частях оперативной па­мяти.</p>
+<p>- Совместное использование несколькими задачами одних и тех же областей памяти. </p>
+
+<p>Например, несколько процессов, выполняющих одну и ту же программу, могут 
+совместно использовать сегмент кода.</p>
+
+<p>Все эти возможности реализованы в современных версиях UNIX с по­мощью т. н. 
+виртуальной памяти, о которой пойдет речь в следующем подразделе. Виртуальная 
+память не является "бесплатным приложением", повышая накладные расходы 
+операционной системы: структуры данных управления памятью размещаются в 
+оперативной памяти, уменьшая ее размер; управление виртуальной памятью процесса 
+может требовать ресур' соемких операций ввода/вывода; для системы со средней 
+загрузкой около 7% процессорного времени приходится на подсистему управления 
+па­мятью. Поэтому от эффективности реализации и работы этой подсистемы во многом 
+зависит производительность операционной системы в целом.</p>
+</html>

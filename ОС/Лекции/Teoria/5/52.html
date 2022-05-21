@@ -1,0 +1,178 @@
+<html>
+<head>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<title>Выполнение сортировки:</title>
+
+</head>
+<body lang=RU  class="Normal">
+<p style='text-align:justify;' align="center"><b><span
+style='font-size:12.0pt;'><font size="4">Выполнение сортировки:</font></span></b></p>
+<p style='text-align:justify;'><span style='font-size:12.0pt;'><b><font size="3"><u>sort 
+  - сортировка и/или слияние файлов</u></font></b></span></p>
+<p style='text-align:justify;'><font size="3"><b><span
+style='font-size:12.0pt;'>Синтаксис:</span></b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>    sort  
+  [-c] [-m] [-u] [-o выходной_файл] [-yкилобайт] [-zдлина]</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>            </span>[-d] 
+  [-f] [-i] [-M] [-n] [-r] [-b] [-tразделитель]</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>            </span>[+позиция_1 
+  [-позиция_2]] [файл ...]</b></font></p>
+<p style='text-align:justify;'><font size="3"><b>Команда sort сортирует строки, 
+  входящие во все исходные файлы, и выдает результат на  стандартный  вывод.  
+  Если имена файлов не указаны, или в качестве файла указан -,  исходная информация 
+  поступает со стандартного ввода.</b></font></p>
+<p style='text-align:justify;'><font size="3"><b>При упорядочении используется 
+  один или несколько ключей сортировки, выделяемых из каждой  вводимой  строки.  
+  По умолчанию ключ сортировки один - вся строка, а  порядок является лексикографическим,  
+  соответствующим  принятой         кодировке символов.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span> </span>           Следующие 
+  опции изменяют стандартный порядок работы:</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-c   Проверить,  
+  является  ли  (единственный)  исходный  файл уже отсортированным. На стандартный 
+  вывод ничего не выдается. В стандартный протокол выводится              соответствующее 
+  сообщение только в случае  нарушения упорядоченности строк.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-m   Только 
+  слияние исходных файлов, которые  предполагаются отсортированными.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-u   Опция 
+  уникальности: из всех совпадающих строк  выводить только одну.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-o выходной_файл 
+  </b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>             </span>Результат 
+  направляется не на стандартный вывод,  а в выходной_файл, который может совпадать  
+  с  одним  из исходных.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>    Следующие 
+  опции позволяют выбрать нужный способ сравнения:</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-d   &quot;Словарный&quot; 
+  порядок: при сравнении являются значимыми только буквы, цифры, пробелы и знаки  
+  табуляции.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-f   Преобразовывать 
+  малые буквы в большие.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-i   При 
+  нечисловых сравнениях игнорировать  символы  с (восьмеричными) кодами,  не  
+  лежащими  в  пределах  040-0176.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-M Сравнивать 
+  как месяца. Первые три символа,  отличные  от  пробела,  сравниваются таким 
+  образом, что &quot;JAN&quot; &lt; &quot;FEB&quot; &lt; ... &lt; &quot;DEC&quot; 
+  (малые буквы  преобра-             зуются  в большие). Остальные трехсимвольные 
+  сочетания считаются меньшими,  чем  &quot;JAN&quot;.  Эта  опция  включает опцию 
+  -b (см. ниже).</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-n   Числовое 
+  сравнение. Начальные пробелы отбрасываются,  затем  цифровые  цепочки символов, 
+  содержащие быть может знак минус и десятичную точку,  сравни-             ваются 
+  как числа. Эта опция включает опцию -b (см.ниже).  Отметим,  что опция -b действует 
+  только на ключи сортировки с наложенными ограничениями.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-r   Заменить 
+  результат сравнения на противоположный.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>    Если 
+  опции, задающие способ сравнения, указаны до ограничений на ключи сортировки, 
+  то  они  применяются  глобально  ко  всем  ключам. Если же соответствующие флаги  
+  ассоциированы с определенными ключами  сортировки  (см.         ниже), они воздействуют 
+  только на &quot;свои&quot; ключи.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>       </span>     Полем 
+  называется минимальная последовательность  символов, за которой следует разделитель 
+  полей  или  перевод строки. По  умолчанию  символом-разделителем  считается   
+  пробел или символ табуляции. Пробелы и табуляции  сразу вслед за разделителем 
+  (если они есть) принадлежат  следующему полю. Все пробелы в начале строки входят 
+  в первое поле. На трактовку  разделителей  влияют  следующие  опции:</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-b   Игнорировать 
+  начальные пробелы при определении начала и конца ключей сортировки. Если опция 
+  -b указана   перед  первым  аргументом  +позиция_1,  она              действует 
+  на все ключи с наложенными  ограничениями.  Флаг  b  можно связать и с отдельными 
+  ключами  сортировки (см. ниже).</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>-tразделитель 
+  -    Использовать заданный символ как разделитель полей.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>            </span>Разделитель 
+  не является частью поля (хотя и  может  входить в ключ сортировки). Каждое вхождение  
+  разделителя является значимым, то есть два рядом стоящих разделителя ограничивают 
+  пустое поле.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>    При наложении 
+  ограничения на ключ сортировки указывается позиция начала ключа (+позиция_1) 
+  и позиция сразу за  концом ключа (-позиция_2). Если  опция  -позиция_2  </b></font></p>
+<p style='text-align:justify'><font size="3"><b><span style='font-size:12.0pt;
+'>отсутствует, ключ занимает весь остаток строки.</span></b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>    Позиция_1 
+  и позиция_2 задаются как пара m.n,  возможно,  с последующими флагами bdfiMnr. 
+  Начальная позиция задается как +m.n, что означает (n+1)-ый символ в  (m+1)-ом         
+  поле (поля и символы нумеруются с единицы).  Отсутствие n означает .0, то есть 
+  первый  символ  (m+1)-го  поля.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>    Если 
+  указан флаг b, то n отсчитывается от первого  непробела в (m+1)-ом поле; +m.0b 
+  означает первый  непробел  в (m+1)-ом поле.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>    Позиция 
+  за концом ключа записывается как -m.n, что  означает (n+1)-ый символ (включая 
+  разделители) после последнего символа m-го поля. Если .n опущено, то подразу-</b></font></p>
+<p style='text-align:justify'><font size="3"><b>мевается .0, то есть разделитель 
+  после m-го поля.  Если  указан флаг b, то n отсчитывается от первого  непробела  
+  в (m+1)-ом поле.</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>        </span>    Если 
+  указано  несколько  ключей  сортировки,  то  более    поздние используются только 
+  в  случае  равенства  более  ранних. Если значения ключей сортировки двух строк 
+  совпадают, строки упорядочиваются с учетом всех символов.</b></font></p>
+<p style='text-align:justify;'><font size="3"><b><i><span
+style='font-size:12.0pt;'>Примеры использования </span><span
+lang=EN-US style='font-size:12.0pt;'>sort</span><span style='font-size:12.0pt;'>:</span></i></b></font></p>
+<p class=MsoBodyTextIndent><font size="1"><b>Допустим есть некий файл <span lang=EN-US>file</span>1, 
+  содержащий имя, фамилию, и какое-то числовое значение:</b></font></p>
+<p style='text-align:justify;'><font size="3"><b>Vasiliy Ivanov               
+  100</b></font></p>
+<p style='text-align:justify;'><font size="3"><b>Ivan Vasil’ev                
+  200</b></font></p>
+<p style='text-align:justify;'><font size="3"><b><span
+lang=EN-US style='font-size:12.0pt;'>Aleksandr Petrov</span><span>          </span>300</b></font></p>
+<p style='text-align:justify;'><font size="3"><b><span
+lang=EN-US style='font-size:12.0pt;'>sort file</span><span style='font-size:12.0pt;
+'>1 – записи сортируются по первой букве имени.</span></b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>            </span>Можно 
+  отсортировать файл по фамилии, т.е. по второму полю:</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>            </span><span
+lang=EN-US style='font-size:12.0pt;'>sort</span><span style='font-size:12.0pt;'> 
+  +1 </span><span
+lang=EN-US style='font-size:12.0pt;'>file</span><span style='font-size:12.0pt;'>1</span></b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>            </span>Сортировка 
+  по третьему полю с игнорированием лидирующих пробелов выполняется с использованием 
+  ключа –<span lang=EN-US style='font-size:12.0pt;
+'>b</span><span
+style='font-size:12.0pt;'>(</span><span lang=EN-US
+style='font-size:12.0pt;'>blank</span><span
+style='font-size:12.0pt;'>):</span></b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>            </span><span
+lang=EN-US style='font-size:12.0pt;'>sort</span><span style='font-size:12.0pt;'> 
+  –</span><span
+lang=EN-US style='font-size:12.0pt;'>b</span><span style='font-size:12.0pt;'> 
+  +2 </span><span
+lang=EN-US style='font-size:12.0pt;'>file</span><span style='font-size:12.0pt;'>1</span></b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>            </span>Для сохранения 
+  результата сортировки в файле используется ключ –о:</b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>            </span><span
+lang=EN-US style='font-size:12.0pt;'>sort –o file2 +1 file1;</span></b></font></p>
+<p style='text-align:justify'><font size="3"><b><span>            </span>sort<span lang=EN-US
+style='font-size:12.0pt;'> </span><span
+style='font-size:12.0pt;'>можно использовать не только для сортировки файлов.</span></b></font></p>
+<p style='text-align:justify;'><font size="3"><b><span
+style='font-size:12.0pt;'>Например:</span></b></font></p>
+<p style='text-align:justify;'><font size="3"><b><span
+lang=EN-US style='font-size:12.0pt;'>ls</span><span style='font-size:12.0pt;'>|</span><span
+lang=EN-US style='font-size:12.0pt;'>sort</span><span style='font-size:12.0pt;'> 
+  –</span><span
+lang=EN-US style='font-size:12.0pt;'>f</span><span style='font-size:12.0pt;'> 
+  – сортировка имен файлов в алфавитном порядке;</span></b></font></p>
+<p style='text-align:justify;'><font size="3"><b><span
+lang=EN-US style='font-size:12.0pt;'>ls</span><span style='font-size:12.0pt;'> 
+  –</span><span
+lang=EN-US style='font-size:12.0pt;'>l</span><span style='font-size:12.0pt;'>|</span><span
+lang=EN-US style='font-size:12.0pt;'>sort</span><span style='font-size:12.0pt;'> 
+  –</span><span
+lang=EN-US style='font-size:12.0pt;'>n</span><span style='font-size:12.0pt;'> 
+  – сортировка в порядке возрастания размеров файлов;</span></b></font></p>
+<p style='text-align:justify;'><font size="3"><b><span
+lang=EN-US style='font-size:12.0pt;'>ls</span><span style='font-size:12.0pt;'> 
+  -</span><span
+lang=EN-US style='font-size:12.0pt;'>l</span><span style='font-size:12.0pt;'>|</span><span
+lang=EN-US style='font-size:12.0pt;'>sort</span><span style='font-size:12.0pt;'> 
+  –</span><span
+lang=EN-US style='font-size:12.0pt;'>nr</span><span style='font-size:12.0pt;'> 
+  – сортировка в порядке убывания размеров файлов.</span></b></font></p>
+ </div>
+</body>
+</html>

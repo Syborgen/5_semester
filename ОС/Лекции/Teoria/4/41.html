@@ -1,0 +1,98 @@
+<html>
+<head>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<title>Программой называется исполняемый файл, а процессом называется последовательность 
+операций программы или часть программы при е</title>
+</head>
+<body lang=RU class="Normal">
+<p align="center"><b><font size="4">Введение в работу №4</font></b></p>
+<p style='text-align:justify'><font size="3"><span style='font-size:12.0pt;
+'><b><font size="1"><u>Программой</u> называется исполняемый файл, а процессом 
+  называется последовательность операций программы или часть программы при ее 
+  выполнении. В </font></b></span><font size="1"><b><span lang=EN-US style='font-size:12.0pt;'>Unix-</span><span style='font-size:12.0pt;
+'>подобных системах одновременно может выполняться множество процессов (эту особенность 
+  часто называют мультипрограммированием или многозадачным режимом). <u>Процесс</u> 
+  – это фундаментальное понятие в </span><span
+lang=EN-US style='font-size:12.0pt;'>Unix</span><span style='font-size:12.0pt;'>. 
+  С помощью процессов происходит управление памятью и ресурсами ввода-вывода, 
+  используемыми для выполнения программы. На первый взгляд кажется, что в </span><span
+lang=EN-US style='font-size:12.0pt;'>Unix </span><span style='font-size:12.0pt;'>происходит 
+  все одновременно, однако на самом деле в конкретный момент времени выполняется 
+  только один процесс. Иллюзию параллельного выполнения создает и поддерживает 
+  метод, называемый «квантованием времени», с помощью которого </span><span
+lang=EN-US style='font-size:12.0pt;'>Unix </span><span style='font-size:12.0pt;'>через 
+  определенные промежутки времени (как правило, каждые 20 миллисекунд) меняет 
+  выполняемый процесс. Процессы сменяют друг друга настолько быстро, что кажется, 
+  что они выполняются одновременно, тогда как в реальности выполнение каждого 
+  процесса занимает лишь малую долю суммарного времени.</span></b></font></font></p>
+<p style='text-align:justify'><font size="1"><b><span>         </span><u>Процесс 
+  состоит</u> из адресного пространства и набора структур данных, содержащихся 
+  внутри ядра. <u>Адресное пространство</u> представляет собой совокупность страниц 
+  памяти, которые ядро выделило для выполнения процесса. Адресное пространство 
+  содержит сегменты для кода программы, которую выполняет процесс, используемые 
+  процессом переменные, стек процесса и различную вспомагательную информацию, 
+  необходимую ядру во время работы процесса.</b></font></p>
+<p style='text-align:justify'><font size="1"><b>В структурах данных ядра хранится 
+  различная информация о каждом процессе. </b></font></p>
+<p style='text-align:justify'><font size="1"><b>К наиболее важным сведениям относятся:</b></font></p>
+<p style='text-align:justify;'> <font size="1"><b><span
+style='font-size:12.0pt;'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </span></span> <span style='font-size:12.0pt;'>Таблица распределения памяти 
+  процесса;</span></b></font></p>
+<p style='text-align:justify;'> <font size="1"><b><span
+style='font-size:12.0pt;'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </span></span> <span style='font-size:12.0pt;'>Текущий статус процесса;</span></b></font></p>
+<p style='text-align:justify;'> <font size="1"><b><span
+style='font-size:12.0pt;'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </span></span> <span style='font-size:12.0pt;'>Приоритет выполнения процесса;</span></b></font></p>
+<p style='text-align:justify;'> <font size="1"><b><span
+style='font-size:12.0pt;'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </span></span> <span style='font-size:12.0pt;'>Информация о ресурсах, которые 
+  использует процесс;</span></b></font></p>
+<p style='text-align:justify;'> <font size="1"><b><span
+style='font-size:12.0pt;'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </span></span> <span style='font-size:12.0pt;'>Маска обработки процесса;</span></b></font></p>
+<p style='text-align:justify;'> <font size="1"><b><span
+style='font-size:12.0pt;'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </span></span> <span style='font-size:12.0pt;'>Владелец процесса.</span></b></font></p>
+<p style='text-align:justify;'><font size="1"><b><span
+style='font-size:12.0pt;'>Каждому новому процессу, созданному ядром, присваивается 
+  уникальный идентификационный номер (</span><span
+lang=EN-US style='font-size:12.0pt;'>PID</span><span style='font-size:12.0pt;'>).</span></b></font></p>
+<p style='text-align:justify;'><font size="1"><b><span
+style='font-size:12.0pt;'>Исходный процесс в терминологии ОС </span><span lang=EN-US style='font-size:12.0pt;'>Unix 
+  </span><span style='font-size:12.0pt;
+'>называют <u>родительским</u>, а его клон – <u>порожденным</u>. Помимо собственного 
+  идентификатора, каждый процесс имеет атрибут </span><span
+lang=EN-US style='font-size:12.0pt;'>PPID</span><span style='font-size:12.0pt;'>, 
+  т.е. идентификатор своего родительского процесса.</span></b></font></p>
+<p style='text-align:justify;'><font size="1"><b><span
+lang=EN-US style='font-size:12.0pt;'>UID – </span><span style='font-size:12.0pt;'>это 
+  идентификационный номер пользователя, создавшего данный процесс. Вносить изменения 
+  в процесс могут только его создатель и привилегированный пользователь. </span></b></font></p>
+<p class=MsoBodyTextIndent><font size="1"><b>От приоритета процесса зависит, какую 
+  часть времени центрального процессора он получит. Выбирая процес для выполнения, 
+  ядро находит процесс с самым высоким «внутренним приоритетом».</b></font></p>
+<p style='text-align:justify;'><font size="1"><b><span
+style='font-size:12.0pt;'>Непосредственно установить внутренний приоритет невозможно, 
+  но можно установить значение </span><span
+lang=EN-US style='font-size:12.0pt;'>nice</span><span style='font-size:12.0pt;'>, 
+  которое существенно влияет на внутренний приоритет. </span></b></font></p>
+<p style='text-align:justify;'><font size="1"><b><span
+style='font-size:12.0pt;'>Процессы не появляются в системе просто так и не создаются 
+  спонтанно ядром. Новые процессы порождаются другими процессами.</span></b></font></p>
+<p style='text-align:justify;'><font size="1"><b><span
+style='font-size:12.0pt;'><u>По состоянию процессов процессы могут быть:</u></span></b></font></p>
+<p style='text-align:justify;'><font size="1"><b><span
+style='font-size:12.0pt;'>Выполнимый – процесс можно выполнять.</span></b></font></p>
+<p style='text-align:justify;'><font size="1"><b><span
+style='font-size:12.0pt;'>Ожидающий – процесс ждет выделения какого-либо ресурса.</span></b></font></p>
+<p style='text-align:justify;'><font size="1"><b><span
+style='font-size:12.0pt;'>Зомби – процесс пытается «умереть».</span></b></font></p>
+<p style='text-align:justify;'><font size="1"><b><span
+style='font-size:12.0pt;'>Остановленный – процесс приостановлен (нет разрешения 
+  на выполнение)</span></b></font></p>
+ </div>
+</body>
+</html>

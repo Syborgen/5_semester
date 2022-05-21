@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>Вызов других пакетных файлов с указанием параметров</title>
+</head>
+<body>
+<CENTER>
+<H1>Вызов других пакетных файлов с указанием параметров</H1>
+<FONT SIZE="3">
+</CENTER>
+
+
+<P>
+<PRE>
+`expr <вызов файлов>`
+<BR>
+
+<P><U><B>Реализация отдельных функций</B></U>
+<BR>
+
+<P>реализация команды mv
+ 
+<P><PRE>
+int mv (char *path1,char *path2)
+ {
+    FILE *id1,*id2;
+    char buffer[256];
+
+   id1=open(id1,"w+r"); //открытие исходного файла на чтение
+   if (id1== NULL) 
+      { printf ("%s",msg(id1)); exit(id1)} //проверка на возможные ошибки
+
+ id1=open(id2,"w");
+   if (id2== NULL) 
+     { printf ("%s",msg(id2)); exit(id2)}
+
+while (fread(id1,sizeof(buffer),&buffer))
+  fwrite(id2,sizeof(buffer),buffer)
+fclose(id2);
+if (del(id1) != NULL) printf("System Error: Can't delete target file")
+ }
+
+пример реализации вспомогательной команды с помощью системных вызовов
+код команды open
+open (char *имя_файла,int режим_открытия)
+  {
+   FCB *info;
+asm {
+			 mov ah,07
+ 			 lea dx, имя_файла
+			 int 22h
+			 mov info, bx
+        }
+if (dx=NULL) {ERROR="Файл $имя_файла не существует";return NULL;}
+if (info.P_uid == пользователь && info.attr.user == режим_открытия  )  
+asm {
+             mov ah,01
+             mov al,режим_открытия
+             lea dx,имя_файла
+             int 22h
+             return bx
+           }  
+ else 
+if (info.G_uid == группа && info.attr.group == режим_открытия  )  
+asm {
+             mov ah,01
+             mov al,режим_открытия
+             lea dx,имя_файла
+             int 22h
+             return bx
+           }  
+else
+if (info.attr.othr == режим_открытия  )  
+asm {
+             mov ah,01
+             mov al,режим_открытия
+             lea dx,имя_файла
+             int 22h
+             return bx
+           }  
+else 
+ERROR = "В доступе отказано";
+return NULL
+
+  } 
+</html>

@@ -1,0 +1,104 @@
+// Наблюдатель 
+interface ISubscriber{
+update()
+}
+class AppServer{
+users[] : ISubscriber
+subscribe()
+unsubscribe()
+updateAll()
+}
+class Graduate{
+}
+class Hirer{
+}
+Graduate -up-|> ISubscriber
+Hirer -up-|> ISubscriber
+AppServer o-left- ISubscriber
+
+// Фасад
+class AppServer{
+delete()
+add()
+show()
+find()
+}
+class Graduate{
+}
+class Hirer{
+}
+cloud DBServer{
+}
+AppServer <-- Graduate
+AppServer <-- Hirer
+AppServer -> DBServer
+
+
+// Финальная диаграмма классов
+abstract class User{
+firstName : string
+secondName : string
+sort()
+find()
+}
+class Graduate{
+requestCount : int
+averageMark : int
+year : int
+speciality : string
+checkInvite()
+sendResume()
+deleteMe()
+}
+class Hirer{
+resumeCount : int
+checkResume()
+sendInvite()
+addRequest()
+deleteRequest()
+}
+
+class Request{
+salary : int
+workPlace : string
+head : hirer*
+}
+Request o--Hirer
+Hirer --|> User
+Graduate --|> User
+class Database{
+DBPath : string
+select()
+add()
+delete()
+update()
+getDBPath()
+setDBPath()
+openDB()
+closeDB()
+}
+Database -left-o Appserver
+Hirer -up-> Appserver
+Graduate -up-> Appserver
+Hirer <-- Appserver
+Graduate <-- Appserver
+class Appserver{
+DB : Database
+users[] : ISubscriber
+subscribe()
+unsubscribe()
+updateAll()
+select()
+add()
+delete()
+update()
+getDB()
+importFile()
+}
+interface ISubscriber{
+update()
+}
+ISubscriber -left-o Appserver
+ISubscriber <|-right- Graduate
+ISubscriber <|-right- Hirer
+

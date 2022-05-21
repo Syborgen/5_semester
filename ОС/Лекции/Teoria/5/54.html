@@ -1,0 +1,34 @@
+<html>
+<head>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<title>awk - сопоставление с шаблонами и преобразование текста</title>
+
+</head>
+<body lang=RU  class="Normal">
+<p style='text-align:justify;'><font size="4"><b>awk</b><b><span lang=EN-US style='font-size:12.0pt;
+'> </span><span> </span>- сопоставление с шаблонами и преобразование текста</b></font></p>
+<p style='text-align:justify;'><font size="3"><b>Синтаксис: awk  [-Fсимвол] [[-f] 
+  программа] [аргумент ...] [файл ...]</b></font></p>
+<p style='text-align:justify;'><b><font size="3">Команда awk сопоставляет строки 
+  исходных файлов с  шаблонами, определенными в программе. Шаблоны можно задать 
+  либо непосредственно в командной строке, либо поместить  в файл с именем программа 
+  и воспользоваться опцией  -f. Если шаблоны указаны в  командной  строке,  их  
+  следует заключить в одинарные кавычки ('), чтобы  избежать  интерпретации shell'ом.</font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+style='font-size:12.0pt;'>За более подробной информацией по </span><span lang=EN-US style='font-size:12.0pt;'>awk</span><span lang=EN-US style='font-size:
+12.0pt;'> </span><span style='font-size:12.0pt;
+'>обращаться к страницам руководства.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+style='font-size:12.0pt;'>Простейший пример использования </span><span lang=EN-US style='font-size:12.0pt;'>awk</span><span style='font-size:12.0pt;
+'>:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+lang=EN-US style='font-size:12.0pt;'>who|awk ‘{print $1,$2}’</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+style='font-size:12.0pt;'>Команда </span><span
+lang=EN-US style='font-size:12.0pt;'>who </span>показывает, кто в настоящий момент 
+  есть в системе. Вывести только пользователей и терминал,  можно с помощью вышепреведенного 
+  примера, где $1 – первое поле – пользователь, $2 – второе поле – терминал.</font></b></p>
+<hr>
+</body>
+</html>

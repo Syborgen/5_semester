@@ -1,0 +1,168 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./23.files/filelist.xml">
+<title>Лабораторная работа №2 </title>
+
+</style>
+
+</head>
+
+<body lang=RU style='tab-interval:36.0pt'>
+
+<div class=Section1>
+  <div align="center"><span
+style='font-style:normal;mso-bidi-font-style:italic'><font color="#000000"><b><font size="4">Восстановление 
+    стертых файлов</font></b></font><font size="4"><b><o:p></o:p></b></font></span> 
+  </div>
+  <p class=MsoNormal style='text-align:justify'><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style='mso-tab-count:1'>            </span><b>При 
+    удалении файла </b></span><b><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-ansi-language:EN-US'>DOS</span><span lang=EN-US style='font-size:
+12.0pt;mso-bidi-font-size:10.0pt'> </span><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>выполняет две операции. Во-первых, первый символ записи 
+    в каталоге, соответствующий данному файлу, изменяется на код греческой буквы 
+    «сигма». При последующих просмотрах каталога этот символ означает, что данная 
+    запись каталога «пуста», ив нее можно заносить информацию о новом файле. В 
+    тоже время вся информация о предыдущем файле остается без изменения, за исключением 
+    первого символа, на код буквы «сигма».<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style='mso-tab-count:1'>            </span>Во-вторых, 
+    </span><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;
+mso-ansi-language:EN-US'>DOS</span><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'> просматривает таблицу размещения файлов и освобождает кластеры, выделенные 
+    этому файлу Фактически коды, образующие связный список кластеров файла, заменяются 
+    на коды, указывающие, что эти кластеры свободны и могут использоваться другими 
+    файлами. Но фактического уничтожения информации в кластерах, занятых файлом, 
+    </span><span lang=EN-US style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>DOS</span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>не выполняет. Когда кластеры 
+    требуются для другого файла, их можно назначить файлу, несмотря на наличие 
+    в них старой информации. Эта информация уничтожается только в процессе записи 
+    в кластеры нового файла. Даже если новый файл короче того, который ранее занимал 
+    кластер, данные из старого файла не попадают в новый, т.к. </span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'>DOS</span><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'> </span><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>длину 
+    файла.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style='mso-tab-count:1'>            </span>Поскольку 
+    файл остается нетронутым, восстановить его вроде бы нетрудно. Однако часто 
+    возникают проблемы. Потеря информации о файле в </span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>FAT</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>оказывается фатальной. На диске 
+    размещается тысячи кластеров, и только в </span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>FAT</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>можно узнать, как они связаны 
+    друг с другом. Начальный кластер можно всегда найти, но вот восстановить цепочку 
+    кластеров дело совсем не простое.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>В простейшем случае файл занимает 
+    всего один кластер. Чтобы восстановить файл после стирания, утилита должна 
+    найти его запись в каталоге, используя для этого имя и расширение файла за 
+    вычетом первого символа. Первый стертый символ заменяется настоящим символом 
+    из имени файла, затем отыскивается в записи каталога начальный кластер, обращается 
+    к </span><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-ansi-language:EN-US'>FAT</span><span lang=EN-US style='font-size:
+12.0pt;mso-bidi-font-size:10.0pt'> </span><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>и заново назначает этот кластер данному файлу.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Если файл занимает несколько 
+    соседних кластеров, действия утилиты усложняются, но ненамного. После восстановления 
+    записи в каталоге утилита обращается к </span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>FAT</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>и назначает файлу столько последовательных 
+    нераспределенных кластеров, сколько требует файл. Число кластеров, входящих 
+    в файл, известно; это число записано в каталоге.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>В действительности, утилита 
+    восстановления назначает последовательные кластеры, если они не заняты другими 
+    файлами. Если последовательные кластеры свободны, они с большей вероятностью 
+    принадлежат стертому файлу. В противном случае, скорее всего, файл разбросан 
+    по диску, что существенно затрудняет его восстановление или даже делает его 
+    невозможным.<o:p></o:p></span></b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+  <h2><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><font size="4">Утилиты 
+    восстановления стертых файлов<o:p></o:p></font><o:p></o:p></span></h2>
+
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><b>Утилиты восстановления стертых 
+    файлом имеют автоматический и ручной режимы. В пакете </b></span><b><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'>Norton</span><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'> </span><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-ansi-language:EN-US'>Utilities</span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>эти подходы реализуются отдельными 
+    программами.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><i
+style='mso-bidi-font-style:normal'><span lang=EN-US style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'><font size="4">Quick</font></span><font size="4"><span lang=EN-US style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'> </span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'></span></font></i><b><i
+style='mso-bidi-font-style:normal'><font size="4"><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'>UnErase</span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> (</span><span lang=EN-US style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>QU</span><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>)</span></font></i><font size="4"><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> 
+    </span></font><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>выполняет 
+    автоматическую сборку файла или группы файлов. Она может работать в интерактивном 
+    и автоматическом режимах.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>В интерактивном режиме программа 
+    просматривает каталог и выводит всю информацию, оставшуюся от стертых файлов, 
+    включая их имена (за исключением первого символа), размеры, а также даты и 
+    время создания. Из этого перечня пользователь может выбрать один или несколько 
+    файлов, требующих восстановления. Нужно только ввести первый символ имени 
+    файла. В автоматическом режиме пользователь вводит имя файла или группы файлов 
+    (с помощью шаблонов), и программа </span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>Quick</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'>UnErase</span><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> 
+    пытается выполнить восстановление наилучшим образом. Но в восстанавливаемый 
+    файл могут быть включены не принадлежащие этому файлу кластеры, о чем можно 
+    узнать только при попытке использовать этот файл.</span><span style='font-size:
+12.0pt;mso-bidi-font-size:10.0pt'><o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Включенная в состав </span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'>Norton</span><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'> </span><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-ansi-language:EN-US'>Utilities</span><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>, более сложная программа </span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>UnErase</span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> выполняет ручное восстановление 
+    файлов. Как и </span><span lang=EN-US style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>Quick</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'>UnErase</span><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>, 
+    она выводит список стертых файлов, но с дополнительной возможностью. Если 
+    запись в каталоге, соответсвующая стертому файлу, занята новым файлом, то 
+    пользователь имеет возможность организовать в каталоге новую запись и попытаться 
+    восстановить стертый файл.</span><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><o:p></o:p></span></b></p>
+</div>
+
+</body>
+
+</html>

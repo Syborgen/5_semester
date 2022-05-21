@@ -1,0 +1,201 @@
+
+// Прецедентов для админа
+actor Администратор
+left to right direction
+rectangle БД{
+(Модифицировать таблицу) <-- Администратор
+(Добавить таблицу) <-- Администратор
+(Сделать резервную кописю БД) <-- Администратор
+(Сделать резервную кописю БД) .left.> (Восстановить БД) : <<include>>
+(Восстановить БД) <-- Администратор
+(Удалить таблицу) <-- Администратор
+(Добавить таблицу) .left.> (Модифицировать таблицу) : <<include>>
+(Добавить таблицу) .right.> (Удалить таблицу) : <<include>>
+(Удалить пользователя) <-- Администратор
+(Добавить пользователя) <-- Администратор
+(Добавить пользователя) .right.> (Удалить пользователя) : <<include>>
+}
+
+// Прецедентов работодателя
+actor Пользователь_работодатель
+Пользователь_работодатель -right-> (Оставить заявку)
+Пользователь_работодатель -right-> (Удалить заявку)
+Пользователь_работодатель -left-> (Отправить приглашение)
+Пользователь_работодатель -left-> (Просмотреть резюме)
+Пользователь_работодатель -up-> (Просмотреть список выпускников)
+Пользователь_работодатель -up-> (Отсортировать выпускников)
+Пользователь_работодатель -down-> (Поиск выпускников по признаку)
+(Поиск выпускников по признаку) ..> (поиск по году выпуска) : <<extend>>
+(Поиск выпускников по признаку) ..> (поиск по среднему баллу) : <<extend>>
+(Поиск выпускников по признаку) ..> (поиск по специальности) : <<extend>>
+(Отсортировать выпускников) .up.> (сортировать по году выпуска) : <<extend>>
+(Отсортировать выпускников) .up.> (сортировать по среднему баллу) : <<extend>>
+(Отсортировать выпускников) .up.> (сортировать по специальности) : <<extend>>
+(Удалить заявку) <.left. (Оставить заявку) : <<include>>
+
+// Прецедентов выпускника
+actor Пользователь_выпускник
+Пользователь_выпускник -right-> (Удалить себя из БД)
+Пользователь_выпускник -left-> (Отправить резюме)
+Пользователь_выпускник -left-> (Просмотреть приглашения)
+Пользователь_выпускник -up-> (Просмотреть список вакансий)
+Пользователь_выпускник -up-> (Отсортировать вакансии)
+Пользователь_выпускник -down-> (Поиск вакансий по признаку)
+(Поиск вакансий по признаку) ..> (поиск по месту работы) : <<extend>>
+(Поиск вакансий по признаку) ..> (поиск по работодателю) : <<extend>>
+(Поиск вакансий по признаку) ..> (поиск по окладу) : <<extend>>
+(Отсортировать вакансии) .up.> (сортировать по месту работы) : <<extend>>
+(Отсортировать вакансии) .up.> (сортировать по работодателю) : <<extend>>
+(Отсортировать вакансии) .up.> (сортировать по окладу) : <<extend>>
+
+// Классов
+abstract class User{
+firstName : string
+secondName : string
+sort()
+find()
+}
+class Graduate{
+requestCount : int
+averageMark : int
+year : int
+speciality : string
+checkInvite()
+sendResume()
+deleteMe()
+}
+class Hirer{
+resumeCount : int
+checkResume()
+sendInvite()
+addRequest()
+deleteRequest()
+}
+
+class Request{
+salary : int
+workPlace : string
+head : hirer*
+}
+Request o--Hirer
+Hirer --|> User
+Graduate --|> User
+class Database{
+DBPath : string
+select()
+add()
+delete()
+update()
+getDBPath()
+setDBPath()
+openDB()
+closeDB()
+}
+Database -left-o Appserver
+Hirer -up-> Appserver
+Graduate -up-> Appserver
+Hirer <-- Appserver
+Graduate <-- Appserver
+class Appserver{
+DB : Database*
+select()
+add()
+delete()
+update()
+getDB()
+importFile()
+}
+
+// Компонентов
+Package Сервер_БД{
+[PostgreSQL]
+}
+Package Сервер_приложений{
+[Database.cs]
+}
+Package Клиентская_программа {
+[Request.cs]
+[Appserver.cs]
+[Graduate.cs]
+[Hirer.cs]
+[User.cs]
+}
+PostgreSQL ..> [Database.cs]
+PostgreSQL <.. [Database.cs]
+[Database.cs] ..> [Appserver.cs]
+[Database.cs] <.. [Appserver.cs]
+[Graduate.cs] ..> [Appserver.cs]
+[Graduate.cs] <.. [Appserver.cs]
+[Hirer.cs] ..> [Appserver.cs]
+[Hirer.cs] <.. [Appserver.cs]
+[Graduate.cs] <.up. [User.cs]
+[Hirer.cs] <.up. [User.cs]
+[Graduate.cs] <.left. [Request.cs]
+[Hirer.cs] <.right. [Request.cs]
+
+// Деятельности
+start
+repeat :ввод логина и пароля;
+repeat while(аутентификация) is (пароль неверный)
+:выбор команды;
+repeat :ввод данных
+:отправка запроса на сервер приложений;
+backward:вывод предупреждения на экран;
+repeat while(проверка корректности данных) is (неверные данные)
+:отпрака запроса в БД;
+:получить результат запроса
+в сервере приложений;
+:отправить результат на клиентское приложение;
+stop
+
+
+
+// Последовательности
+skinparam maxmessagesize 200
+actor Работодатель
+Работодатель -> Hirer : Просмотреть список выпускников
+activate Hirer
+Hirer -> Appserver : Запрос на вывод списка выпускников
+activate Appserver
+Appserver -> Database : Запрос списка выпускников
+activate Database
+Appserver <-- Database : Результат запроса
+deactivate Database
+Hirer <-- Appserver : Список выпускников
+deactivate Appserver
+Работодатель <- Hirer : Вывести список выпускников
+deactivate Hirer
+
+// Развертывания
+node Клиентсийк_ПК{
+[Agency.exe]
+}
+node Сервер_приложений{
+[AppServ.exe]
+}
+node Сервер_БД{
+database База_Данных
+[PostgreSQL.exe]
+}
+PostgreSQL.exe - База_Данных
+Agency.exe --> AppServ.exe
+AppServ.exe --> PostgreSQL.exe
+
+// Состояний
+[*] -> Выбор_команды : Авторизация
+Выбор_команды --> Ввод_данных
+Ввод_данных --> Передача_команды_серверу
+Передача_команды_серверу -up> Выбор_команды : Данные некорректны
+Передача_команды_серверу -up> Вывод_данных 
+Вывод_данных -up> Выбор_команды
+Выбор_команды -> [*] : Команда выхода
+
+// Кооперации
+card Hirer
+card Appserver
+card Database
+Hirer -> Appserver : 1.Запрос на вывод списка выпускников
+Appserver --> Database : 2.Запрос списка выпускников
+Database -> Appserver : 4.Результат запроса
+Appserver --> Hirer : 5.Список выпускников
+Appserver -> Appserver : 3.Проверка запроса 

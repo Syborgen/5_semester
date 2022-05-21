@@ -1,0 +1,276 @@
+<html>
+<head>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<title>Лабораторная работа №5</title>
+
+</head>
+<body lang=RU   class="Normal">
+<p style='text-align:justify;' align="center"><b><font size="3">grep - поиск по 
+  шаблону, заданному  ограниченным  регулярным выражением.</font></b></p>
+<p><span style='font-size:12.0pt;
+'><font size="3"><b>Синтаксис</b></font></span><b><font size="3">:  grep  [-b] 
+  [-c] [-i] [-l] [-n] [-s] [-v]  ограниченное_регулярное_выражение [файл ...]</font></b></p>
+<p class=MsoBodyTextIndent><b><font size="3">Команда grep сопоставляет строки 
+  исходных файлов с шаблоном, заданным  ограниченным_регулярным_выражением. Если 
+  файлы не  указаны,  используется  стандартный  ввод.          Обычно каждая 
+  успешно сопоставленная строка  копируется     на стандартный вывод; если исходных  
+  файлов  несколько,         перед найденной строкой выдается имя файла. В grep  
+  используется компактный недетерминированный  алгоритм.  В качестве шаблонов 
+  воспринимаются ограниченные  регулярные выражения (выражения, имеющие своими 
+  значениями цепочки символов, и использующие ограниченный набор алфавитно-цифровых 
+  и специальных символов).</font></b></p>
+<p><b><font size="3"><span style='font-size:12.0pt;
+'>В командной строке могут задаваться следующие опции:</span></font></b></p>
+<p style='text-align:justify'><b><font size="3"><span>            </span>-b   
+  Перед каждой строкой ставить номер блока, в  котором она находится. Используется 
+  для  поиска  блока   по контексту (блоки нумеруются с нуля).</font></b></p>
+<p style='text-align:justify'><b><font size="3"><span>            </span>-c   
+  Выдавать только количество успешно  сопоставленных  строк.</font></b></p>
+<p style='text-align:justify'><b><font size="3"><span>            </span>-i   
+  При сопоставлении не  различать  большие  и  малые  буквы.</font></b></p>
+<p style='text-align:justify'><b><font size="3"><span>            </span>-l   
+  Выдавать только имена файлов, в которых  есть  успешно сопоставленные строки, 
+  разделяя имена  переводами строк.</font></b></p>
+<p style='text-align:justify'><b><font size="3"><span>            </span>-n   
+  Перед каждой строкой  ставить  ее  номер  в  файле  (строки нумеруются с 1).</font></b></p>
+<p style='text-align:justify'><b><font size="3"><span>            </span>-s   
+  Подавить выдачу диагностических сообщений о  несуществующих и недоступных для 
+  чтения файлах.</font></b></p>
+<p style='text-align:justify'><b><font size="3"><span>            </span>-v   
+  Выдавать только строки, не удовлетворяющие  шаблону.</font></b></p>
+<p style='text-align:justify'><b><font size="3"><span>            </span><i>Таблица 
+  1 -</i> <i>Регулярные выражения <span
+lang=EN-US style='font-size:12.0pt;'>grep </span><span style='font-size:12.0pt;'>(в 
+  порядке убывания приоритета)</span></i></font></b></p>
+<table border=1 cellspacing=0 cellpadding=0>
+  <tr> 
+    <td width=76 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="3"><span> </span>           
+        с</font></b></p>
+    </td>
+    <td width=397 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="3"><span style='font-size:12.0pt;
+  '>Любой неспециальный символ с соответсвует самому себе</span></font></b></p>
+    </td>
+  </tr>
+  <tr> 
+    <td width=76 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>\ с</span></font></b></p>
+    </td>
+    <td width=397 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>Указание убрать любое специальное значение символа с</span></font></b></p>
+    </td>
+  </tr>
+  <tr> 
+    <td width=76 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>^</span></font></b></p>
+    </td>
+    <td width=397 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>Начало строки</span></font></b></p>
+    </td>
+  </tr>
+  <tr> 
+    <td width=76 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>$</span></font></b></p>
+    </td>
+    <td width=397 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>Конец строки</span></font></b></p>
+    </td>
+  </tr>
+  <tr> 
+    <td width=76 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>.</span></font></b></p>
+    </td>
+    <td width=397 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>Любой одиночный символ</span></font></b></p>
+    </td>
+  </tr>
+  <tr> 
+    <td width=76 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>[…]</span></font></b></p>
+    </td>
+    <td width=397 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>Любой символ из …; допустимы диапазоны типа </span><span
+  lang=EN-US style='font-size:12.0pt;'>a</span><span style='font-size:12.0pt;'>-</span><span
+  lang=EN-US style='font-size:12.0pt;'>z</span></font></b></p>
+    </td>
+  </tr>
+  <tr> 
+    <td width=76 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>[^…]</span></font></b></p>
+    </td>
+    <td width=397 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>Любой символ не из …</span></font></b></p>
+    </td>
+  </tr>
+  <tr> 
+    <td width=76 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>\ n</span></font></b></p>
+    </td>
+    <td width=397 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>Строка, соответсвующая </span><span lang=EN-US
+  style='font-size:12.0pt;'>n</span><span
+  style='font-size:12.0pt;'>-му выражению \(…\)</span></font></b></p>
+    </td>
+  </tr>
+  <tr> 
+    <td width=76 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span lang=EN-US
+  style='font-size:12.0pt;'>r</span><span
+  style='font-size:12.0pt;'> *</span></font></b></p>
+    </td>
+    <td width=397 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>Нуль или более вхождений </span><span lang=EN-US
+  style='font-size:12.0pt;'>r</span></font></b></p>
+    </td>
+  </tr>
+  <tr> 
+    <td width=76 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span lang=EN-US
+  style='font-size:12.0pt;'>r</span><span
+  style='font-size:12.0pt;'>1 </span><span lang=EN-US
+  style='font-size:12.0pt;'>r</span><span
+  style='font-size:12.0pt;'>2</span></font></b></p>
+    </td>
+    <td width=397 valign=top class="Normal"> 
+      <p style='text-align:justify'><b><font size="1"><span style='font-size:12.0pt;
+  '>За </span><span lang=EN-US style='font-size:12.0pt;
+  '>r</span>1  следует <span lang=EN-US
+  style='font-size:12.0pt;'>r</span><span
+  style='font-size:12.0pt;'>2</span></font></b></p>
+    </td>
+  </tr>
+</table>
+<p style='text-align:justify;'><b><font size="1"><i><span style='font-size:12.0pt;'>Примеры 
+  использования </span><span
+lang=EN-US style='font-size:12.0pt;'>grep</span><span
+style='font-size:12.0pt;'>:</span></i></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Вывести все файлы и директории, в которых встречается 
+  буква </span><span lang=EN-US
+style='font-size:12.0pt;'>s</span><span
+style='font-size:12.0pt;'>: </span><span lang=EN-US
+style='font-size:12.0pt;'>ls</span><span
+style='font-size:12.0pt;'>|</span><span lang=EN-US
+style='font-size:12.0pt;'>grep s</span><span style='font-size:12.0pt;'>.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Вывести все файлы и директории, которые начинаются с 
+  буквы </span><span lang=EN-US
+style='font-size:12.0pt;'>s</span><span
+style='font-size:12.0pt;'>: </span><span lang=EN-US
+style='font-size:12.0pt;'>ls</span><span
+style='font-size:12.0pt;'>|</span><span lang=EN-US
+style='font-size:12.0pt;'>grep</span><span
+style='font-size:12.0pt;'> ^</span><span lang=EN-US
+style='font-size:12.0pt;'>s</span><span
+style='font-size:12.0pt;'>.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Вывести все файлы и директории, которые заканчиваются 
+  на букву </span><span lang=EN-US
+style='font-size:12.0pt;'>s</span><span
+style='font-size:12.0pt;'>: </span><span lang=EN-US
+style='font-size:12.0pt;'>ls</span><span
+style='font-size:12.0pt;'>|</span><span lang=EN-US
+style='font-size:12.0pt;'>grep s</span><span style='font-size:12.0pt;'>$.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1">Различие между большими и малыми 
+  буквами в вышеприведенных примерах  существует.</font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Чтобы снять различие между большими и малыми буквами 
+  используйте </span><span lang=EN-US style='font-size:
+12.0pt;'>grep</span><span
+style='font-size:12.0pt;'> – </span><span lang=EN-US
+style='font-size:12.0pt;'>i</span><span
+style='font-size:12.0pt;'>.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Например: Вывести все файлы и директории, которые начинаются 
+  с буквы </span><span lang=EN-US
+style='font-size:12.0pt;'>S</span><span
+style='font-size:12.0pt;'>, или </span><span
+lang=EN-US style='font-size:12.0pt;'>s</span><span style='font-size:12.0pt;'>:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+lang=EN-US style='font-size:12.0pt;'>ls|grep –i ^s.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Вывести список имен вложенных каталогов:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+lang=EN-US style='font-size:12.0pt;'>ls –l|grep ‘^d’</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Вывести список файлов, доступных всем для чтения записи, 
+  выполнеия:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+lang=EN-US style='font-size:12.0pt;'>ls –l|grep ‘^-……rwx’</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Выяснить работает, ли указанный пользователь в системе:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+lang=EN-US style='font-size:12.0pt;'>who</span><span style='font-size:12.0pt;'>|</span><span
+lang=EN-US style='font-size:12.0pt;'>grep student</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Использование двойных кавычек: двойные кавычки требуются 
+  для размещения в шаблоне пробелов.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Найти все слова их 4-х букв, начинающихся с </span><span lang=EN-US style='font-size:12.0pt;'>d</span><span style='font-size:12.0pt;
+'>:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+lang=EN-US style='font-size:12.0pt;'>grep</span><span style='font-size:12.0pt;'> 
+  “</span><span
+lang=EN-US style='font-size:12.0pt;'>d</span><span style='font-size:12.0pt;'>…”</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Найти все слова из 4-х букв, начинающихся с в и оканчивающихся 
+  точкой (знак \ - обратный слэш – отменяет специальное значение следующего символа).</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1">Найти все строки, начинающиеся 
+  с  с букв <span
+lang=EN-US style='font-size:12.0pt;'>a</span><span style='font-size:12.0pt;'>,</span><span
+lang=EN-US style='font-size:12.0pt;'>b</span><span style='font-size:12.0pt;'>,</span><span
+lang=EN-US style='font-size:12.0pt;'>c</span><span style='font-size:12.0pt;'>,</span><span
+lang=EN-US style='font-size:12.0pt;'>x</span><span style='font-size:12.0pt;'>,</span><span
+lang=EN-US style='font-size:12.0pt;'>y</span><span style='font-size:12.0pt;'>,</span><span
+lang=EN-US style='font-size:12.0pt;'>z</span><span style='font-size:12.0pt;'>:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+lang=EN-US style='font-size:12.0pt;'>grep</span><span style='font-size:12.0pt;'> 
+  “^[</span><span
+lang=EN-US style='font-size:12.0pt;'>abcxyz</span><span style='font-size:12.0pt;'>]”.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Найти все слова из 4-х букв, не начинающиеся с </span><span lang=EN-US style='font-size:12.0pt;'>D</span><span style='font-size:12.0pt;
+'> или </span><span lang=EN-US style='font-size:12.0pt;
+'>d</span><span
+style='font-size:12.0pt;'>, в которых последние три буквы малые от </span><span lang=EN-US style='font-size:12.0pt;'>a</span><span style='font-size:12.0pt;
+'> до </span><span lang=EN-US style='font-size:12.0pt;
+'>z</span><span
+style='font-size:12.0pt;'>:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+lang=EN-US style='font-size:12.0pt;'>grep “[^Dd][a-z][a-z][a-z]”</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Фигурные скобки задают количество повторений предыдущего 
+  знака:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Найти все слова из 4-х букв, не начинающиеся с </span><span lang=EN-US style='font-size:12.0pt;'>D</span><span style='font-size:12.0pt;
+'> или </span><span lang=EN-US style='font-size:12.0pt;
+'>d</span><span
+style='font-size:12.0pt;'>, в которых последние три буквы малые от </span><span lang=EN-US style='font-size:12.0pt;'>a</span><span style='font-size:12.0pt;
+'> до </span><span lang=EN-US style='font-size:12.0pt;
+'>z</span><span
+style='font-size:12.0pt;'>:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+lang=EN-US style='font-size:12.0pt;'>grep “[^Dd][a-z]{3}”</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+style='font-size:12.0pt;'>Найти все слова, содержащие от 3, до 5-ти малых букв:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="1"><span
+lang=EN-US style='font-size:12.0pt;'>grep “[a-z]”{3,5}</span></font></b></p>
+ </div>
+</body>
+</html>

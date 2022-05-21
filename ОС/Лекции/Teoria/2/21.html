@@ -1,0 +1,78 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./21.files/filelist.xml">
+<title>Лабораторная работа №2 </title>
+
+</head>
+
+<body>
+
+<div class=Section1> 
+  <h1><font color="#000000">Методические указания к выполнению работы</font></h1>
+
+<p class=MsoNormal><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><span
+style='mso-tab-count:1'>            </span><o:p></o:p></span></p>
+
+<p class=MsoBodyText><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><span
+style='mso-tab-count:1'>            </span><o:p></o:p></span></p>
+
+  <p class=MsoBodyText style='text-indent:36.0pt'><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><b><font size="3">Жесткие диски<span style="mso-spacerun: yes">  
+    </span>предназначены для постоянного хранения информации.<o:p></o:p><o:p></o:p><o:p></o:p></font></b></span></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><font size="3"><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Диск имеет равномерное покрытие, 
+    в котором запоминаются данные. </span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>DOS</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>располагает данные последовательностями 
+    <i style='mso-bidi-font-style:normal'>по 512 байт</i>, которые называются 
+    <font size="4">секторами</font>, но в принципе операционная система может 
+    организовывать данные на диске как угодно.<o:p></o:p></span></b></font></p>
+  <h2><font size="3"><b><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>Диск делится на секторы, и соответсвенно, дорожки делятся на участки. 
+    Секторы создаются при форматировании диска. Низкоуровневое форматирование 
+    определяет секторы, записывая последовательность специальных кодов, говорящих 
+    контроллеру, где начинается сектор. Затем записываются специальные идентификационные 
+    номера, так что у каждого сектора появляется своя метка.<o:p></o:p></span></b></font></h2>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><font size="3"><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><font size="4">Файл</font> 
+    – понятие, которое используется </span><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-ansi-language:EN-US'>DOS</span><span lang=EN-US style='font-size:
+12.0pt;mso-bidi-font-size:10.0pt'> </span><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>для изоляции программ от сложностей размещения данных 
+    на дисковой поверхности. Это не что иное, как цепочка секторов, заполненных 
+    данными. </span><span lang=EN-US style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>DOS</span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>держит на диске списки файлов, 
+    называемые <i style='mso-bidi-font-style:normal'><font size="4">каталогами</font>.</i> 
+    В них находятся некоторая информация о файле и номер сектора, с которого начинается 
+    файл. Каталог ничего не говорит о размещении файла на диске, кроме адреса 
+    его начала. Все остальное приходится на <i style='mso-bidi-font-style:normal'><font size="4">таблицу 
+    размещения файлов</font></i>[<a href="22.html">см</a>]. <o:p></o:p><o:p></o:p><o:p></o:p></span></b></font></p>
+  <h2><font size="3"><b><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'><font size="4">Кластер</font> -<span style="mso-spacerun: yes">  </span>единица 
+    распределения дискового пространства (1, 2 сектора). <o:p></o:p></span></b></font></h2>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><font size="3"><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Начальный кластер дает номер 
+    первого и, возможно, единственного кластера, отведенного файлу. </span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'>DOS</span><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'> </span><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>берет 
+    этот номер, преобразует его в соответсвующие номера секторов и начинает доступ 
+    к файлу. Таблица размещения файлов указывает путь к следующему кластеру, занимаемому 
+    файлом.<o:p></o:p></span></b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><o:p></o:p></span></font><font size="+1"><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><o:p></o:p></span></font></p>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,2095 @@
+<html>
+
+<body lang=RU>
+
+<p>В реализации перечисленных функций существенную роль играют струк&shy;туры данных, обеспечивающие удобное представление адресного про&shy;странства
+процесса для операционной системы. Фактический формат этих структур существенным образом зависит от аппаратной архитектуры и вер&shy;сии
+UNIX, поэтому в следующих разделах для иллюстрации тех или иных положений также
+использована операционная система SCO UNIX.</p> 
+
+<h3>Области</h3>
+<p>В SCO UNIX адресное пространство процесса разделено
+на несколько участков, называемых областями (region). Область представляет собой не&shy;прерывный участок виртуального
+адресного пространства процесса, кото&shy;рый
+рассматривается ядром системы как отдельный объект, разделяемый или. защищенный от постороннего доступа. Область может использоваться
+для хранения данных различных типов, включая код, данные, разделяемую память,
+сегменты библиотек и отображаемые в память файлы. Каждая ак&shy;тивная область представлена соответствующей структурой данных ядра и служит основой для управления памятью процесса.</p> 
+
+<p>Каждая область представлена собственным сегментом памяти. В совокуп&shy;ности
+со страничным механизмом организации виртуальной памяти такой подход предоставляет ядру системы большие возможности по эффектив&shy;ному управлению виртуальной памятью процесса.</p> 
+
+<p>Области могут совместно использоваться несколькими процессами, при этом ядру нет необходимости создавать дополнительные копии, нужно лишь задать требуемое отображение (виртуальные адреса области у раз&shy;личных процессов могут не совпадать). В качестве примеров разделяемых областей можно
+привести разделяемую память, разделяемые библиотеки Или отображаемые в память файлы. Часто код программы совместно ис&shy;пользуется
+несколькими родственными процессами. Информация о каж-Дой активной области
+хранится ядром в структуре данных region.</p> 
+
+<p>Поскольку одна и та же область может использоваться несколькими про&shy;цессами, для каждого процесса ядро создает связанный список структур рregion (per process region), которые в свою очередь адресуют области, Используемые
+процессом. Указатель на список структур pregion для каж-Аого процесса находится в записи таблицы процессов — структуре proс.</p> 
+
+<p>Основные поля структур region и pregion приведены на рис. 3.10.</p> 
+
+<p><img width=506 height=476
+src="2part3!.files/image002.jpg" v:shapes="_x0000_i1025"></p> 
+
+<p>Помимо указателей p_next, организующих структуры pregion в виде связанного списка, и p_reg, обеспечивающих адресацию соответствующей структуры region, в каждой структуре pregion определен набор флагов p_flags, определяющий права доступа к области,
+режим блокирования 1 памяти и т. д. Поле p_type указывает на тип области. Оно может содер&shy;жать одно из
+следующих значений:</p> 
+
+<div class=Section1>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0
+ style='margin-left:2.0pt;border-collapse:collapse;mso-padding-alt:0cm 2.0pt 0cm 2.0pt'>
+ <tr style='height:18.7pt'>
+  <td width=151 valign=top style='width:4.0cm;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:18.7pt'>
+  <p class=Normal style='background:white'><span style='font-size:12.0pt;
+  mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:.05pt'>Значение</span></p>
+  </td>
+  <td width=508 valign=top style='width:380.65pt;border:solid windowtext 1.0pt;
+  border-left:none;mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:
+  solid windowtext .75pt;mso-border-right-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:18.7pt'>
+  <p class=Normal style='margin-left:11.05pt;background:white'><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.05pt'>Описание</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.85pt'>
+  <td width=151 valign=top style='width:4.0cm;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.85pt'>
+  <p class=Normal style='background:white'><span style='font-size:12.0pt;
+  mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:-.1pt'>РТ_</span><span lang=EN-US
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.1pt;
+  mso-ansi-language:EN-US'>UNUSED</span></p>
+  </td>
+  <td width=508 valign=top style='width:380.65pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;mso-border-right-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.85pt'>
+  <p class=Normal style='margin-left:10.8pt;background:white'><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.1pt'>Область
+  не используется</span></p>
+  </td>
+ </tr>
+ <tr style='height:14.9pt'>
+  <td width=151 valign=top style='width:4.0cm;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:14.9pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:.45pt;mso-ansi-language:EN-US'>PT_</span><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:.45pt'>Т</span><span
+  lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:
+  Arial;mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:.45pt;
+  mso-ansi-language:EN-US'>EXT</span></p>
+  </td>
+  <td width=508 valign=top style='width:380.65pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;mso-border-right-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='margin-left:11.05pt;background:white'><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black'>Область содержит сегмент
+  кода</span></p>
+  </td>
+ </tr>
+ <tr style='height:14.9pt'>
+  <td width=151 valign=top style='width:4.0cm;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:14.9pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:-.35pt;mso-ansi-language:EN-US'>PT_DATA</span></p>
+  </td>
+  <td width=508 valign=top style='width:380.65pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;mso-border-right-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='margin-left:11.05pt;background:white'><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.1pt'>Область
+  содержит сегмент данных</span></p>
+  </td>
+ </tr>
+ <tr style='height:13.9pt'>
+  <td width=151 valign=top style='width:4.0cm;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:13.9pt'>
+  <p class=Normal style='background:white'><span style='font-size:12.0pt;
+  mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:-.05pt'>РТ_</span><span lang=EN-US
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.05pt;
+  mso-ansi-language:EN-US'>STACK</span></p>
+  </td>
+  <td width=508 valign=top style='width:380.65pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;mso-border-right-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:13.9pt'>
+  <p class=Normal style='margin-left:11.05pt;background:white'><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.05pt'>Область
+  используется в качестве стека процесса</span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-lastrow:yes;height:16.8pt'>
+  <td width=151 valign=top style='width:4.0cm;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:16.8pt'>
+  <p class=Normal style='background:white'><span style='font-size:12.0pt;
+  mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:-.1pt'>РТ_</span><span lang=EN-US
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.1pt;
+  mso-ansi-language:EN-US'>SHMEM</span></p>
+  </td>
+  <td width=508 valign=top style='width:380.65pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;mso-border-right-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:16.8pt'>
+  <p class=Normal style='margin-left:11.05pt;background:white'><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.1pt'>Область
+  используется в качестве разделяемой памяти</span></p>
+  </td>
+ </tr>
+</table>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0
+ style='margin-left:2.0pt;border-collapse:collapse;mso-padding-alt:0cm 2.0pt 0cm 2.0pt'>
+ <tr style='height:15.85pt'>
+  <td width=633 colspan=2 valign=top style='width:474.9pt;border:none;
+  border-bottom:solid windowtext 1.0pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.85pt'>
+  <p class=Normal style='margin-left:303.6pt;background:white'><i
+  style='mso-bidi-font-style:normal'><span style='font-size:12.0pt;mso-bidi-font-size:
+  10.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:-.1pt'>(продолжение)</span></i></p>
+  </td>
+ </tr>
+ <tr style='height:16.8pt'>
+  <td width=123 valign=top style='width:92.15pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:16.8pt'>
+  <p class=Normal style='background:white'><span style='font-size:12.0pt;
+  mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:-.35pt'>Значение</span></p>
+  </td>
+  <td width=510 valign=top style='width:382.75pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:16.8pt'>
+  <p class=Normal style='margin-left:5.3pt;background:white'><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.3pt'>Описание</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.85pt'>
+  <td width=123 valign=top style='width:92.15pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.85pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:-.15pt;mso-ansi-language:EN-US'>PT_LIBTXT</span></p>
+  </td>
+  <td width=510 valign=top style='width:382.75pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.85pt'>
+  <p class=Normal style='margin-left:5.05pt;background:white'><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.05pt'>Область
+  содержит код библиотек</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.35pt'>
+  <td width=123 valign=top style='width:92.15pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:-.4pt;mso-ansi-language:EN-US'>PT_LIBDAT</span></p>
+  </td>
+  <td width=510 valign=top style='width:382.75pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:5.3pt;background:white'><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.1pt'>Область
+  содержит данные библиотек</span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-lastrow:yes;height:28.1pt'>
+  <td width=123 valign=top style='width:92.15pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:28.1pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='font-size:
+  12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:-.45pt;mso-ansi-language:EN-US'>PT_SHFIL</span></p>
+  </td>
+  <td width=510 valign=top style='width:382.75pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:28.1pt'>
+  <p class=Normal style='margin-left:5.05pt;background:white'><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.1pt'>Область
+  используется для хранения файла, отображенного в память</span><span
+  style='font-size:12.0pt;mso-bidi-font-size:10.0pt'></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p>Наконец, поле p_regva задает виртуальный адрес области в адресном пространстве процесса.</p>
+<p>Поля структуры region, приведенные на рис. 3.10, имеют следующие
+зна&shy;чения. Поле r_pgsz определяет размер области в страницах, из
+которых г_nvalid страниц присутствуют в оперативной памяти
+(см. далее раздел &quot;Страничное замещение&quot;). Несколько
+процессов могут ссылаться на одну и ту же область,
+поле r_refcnt хранит число таких ссылок. Поле r_pde адресует таблицу страниц области5.
+Поле r_iptr адресует inode файла, где располагаются данные области (например, для области кода, r_iptr будет указывать
+на inode исполняемого файла).</p> 
+
+<p>Фактическую информацию о структурах управления адресным пространст&shy;вом процесса
+можно получить с помощью команды crash(lM). В следую&shy;щем примере таким образом определяется содержимое структур pregion процесса и характеристики соответствующих областей.</p> 
+
+<p># crash</p> 
+
+<p>dumpfile&nbsp;
+=&nbsp;&nbsp; /dev/mem,&nbsp;&nbsp; namelist&nbsp;
+=&nbsp;&nbsp; /unix,&nbsp;&nbsp; outfile&nbsp;
+=&nbsp;&nbsp; stdout</p> 
+
+<p>&gt; pregion&nbsp; 101</p> 
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0
+ style='margin-left:2.0pt;border-collapse:collapse;mso-padding-alt:0cm 2.0pt 0cm 2.0pt'>
+ <tr style='height:10.55pt'>
+  <td width=66 valign=top style='width:49.65pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>SLOT </p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>PREG </p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>REG# </p> 
+  </td> 
+  <td width=123 valign=top style='width:92.15pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>REGVA </p> 
+  </td> 
+  <td width=76 valign=top style='width:2.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>TYPE </p> 
+  </td> 
+  <td width=142 valign=top style='width:106.3pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>FLAGS </p> 
+  </td> 
+ </tr> 
+ <tr style='height:12.5pt'>
+  <td width=66 valign=top style='width:49.65pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>101 </p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>12 </p> 
+  </td> 
+  <td width=123 valign=top style='width:92.15pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>0x700000 </p> 
+  </td> 
+  <td width=76 valign=top style='width:2.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>text </p> 
+  </td> 
+  <td width=142 valign=top style='width:106.3pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>rdonly </p> 
+  </td> 
+ </tr> 
+ <tr style='height:11.05pt'>
+  <td width=66 valign=top style='width:49.65pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.05pt'>
+  <p>&nbsp;</p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.05pt'>
+  <p>1 </p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.05pt'>
+  <p>22 </p> 
+  </td> 
+  <td width=123 valign=top style='width:92.15pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.05pt'>
+  <p>0x701000 </p> 
+  </td> 
+  <td width=76 valign=top style='width:2.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.05pt'>
+  <p>data </p> 
+  </td> 
+  <td width=142 valign=top style='width:106.3pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.05pt'>
+  <p>&nbsp;</p> 
+  </td> 
+ </tr> 
+ <tr style='height:11.5pt'>
+  <td width=66 valign=top style='width:49.65pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>&nbsp;</p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>2 </p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>23 </p> 
+  </td> 
+  <td width=123 valign=top style='width:92.15pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>OxVffffffc </p> 
+  </td> 
+  <td width=76 valign=top style='width:2.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>stack </p> 
+  </td> 
+  <td width=142 valign=top style='width:106.3pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>&nbsp;</p> 
+  </td> 
+ </tr> 
+ <tr style='height:12.5pt'>
+  <td width=66 valign=top style='width:49.65pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>&nbsp;</p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>3 </p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>145 </p> 
+  </td> 
+  <td width=123 valign=top style='width:92.15pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>0x80001000 </p> 
+  </td> 
+  <td width=76 valign=top style='width:2.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>lbtxt </p> 
+  </td> 
+  <td width=142 valign=top style='width:106.3pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:12.5pt'>
+  <p>rdonly </p> 
+  </td> 
+ </tr> 
+ <tr style='mso-yfti-lastrow:yes;height:11.5pt'>
+  <td width=66 valign=top style='width:49.65pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>&nbsp;</p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>4 </p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>187 </p> 
+  </td> 
+  <td width=123 valign=top style='width:92.15pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>0x80031000 </p> 
+  </td> 
+  <td width=76 valign=top style='width:2.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>lbdat </p> 
+  </td> 
+  <td width=142 valign=top style='width:106.3pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:11.5pt'>
+  <p>pr </p> 
+  </td> 
+ </tr> 
+</table> 
+
+<p>Как
+можно увидеть из вывода команды crash(lM), с рассматриваемым процессом связаны пять областей: сегмент кода,
+данных и стека, а также сегменты кода и данных подключенной библиотеки. Столбец
+REG# опре&shy;деляет запись таблицы областей, где
+расположена адресуемая каждой pregion область region. Заметим, что
+значение в столбце REG# лишь от&shy;части соответствует полю p_reg структуры pregion, поскольку последнее является указателем, а не индексом таблицы. Столбец regva содержит значения виртуальных адресов областей.</p> 
+
+<p>Для областей, размер которых превышает 4 Мбайт, одной таблицы страниц
+недостаточно, и region хранит элементы каталога таблиц страниц в виде
+связанного списка.</p> 
+
+<p>С помощью полученной информации мы можем более детально рассмот-реть любую из областей процесса. Выведем данные о сегментах кода, дан-ных и стека:</p>
+<p>&gt;region 12 22 23</p> 
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0
+ style='margin-left:2.0pt;border-collapse:collapse;mso-padding-alt:0cm 2.0pt 0cm 2.0pt'>
+ <tr style='height:9.6pt'>
+  <td width=38 valign=top style='width:28.4pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>SLOT </p> 
+  </td> 
+  <td width=38 valign=top style='width:1.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>PGSZ</p> 
+  </td> 
+  <td width=66 valign=top style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>VALID</p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>SMEM</p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>NONE</p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'><br clear=all
+  style='mso-column-break-before:always'>
+   
+  <p>SOFF&nbsp;&nbsp;&nbsp;&nbsp;
+  NONE&nbsp;&nbsp;&nbsp;&nbsp; SOFF </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>REF </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>SWP </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>NSW </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>FORW 
+  </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>BACK </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>INOX </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>TYPE </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:9.6pt'>
+  <p>flags 
+  </p> 
+  </td> 
+ </tr> 
+ <tr style='height:10.1pt'>
+  <td width=38 valign=bottom style='width:1.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>12 </p> 
+  </td> 
+  <td width=38 valign=bottom style='width:28.4pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>1 </p> 
+  </td> 
+  <td width=66 valign=bottom style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>1 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>1 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>11 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>15 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>5 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>154 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>stxt </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.1pt'>
+  <p>dona! </p> 
+  </td> 
+ </tr> 
+ <tr style='height:10.55pt'>
+  <td width=38 valign=bottom style='width:1.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>22 </p> 
+  </td> 
+  <td width=38 valign=bottom style='width:28.4pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>3 </p> 
+  </td> 
+  <td width=66 valign=bottom style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>1 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>1 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>238 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>23 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>154 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>priv </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>dona </p> 
+  </td> 
+ </tr> 
+ <tr style='mso-yfti-lastrow:yes;height:10.55pt'>
+  <td width=38 valign=bottom style='width:1.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>23 </p> 
+  </td> 
+  <td width=38 valign=bottom style='width:28.4pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>2 </p> 
+  </td> 
+  <td width=66 valign=bottom style='width:49.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>1 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>1 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>1 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>0 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>135 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>24 </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>&nbsp;</p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>priv </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.8pt;padding:0cm 2.0pt 0cm 2.0pt;
+  height:10.55pt'>
+  <p>stack 
+  </p> 
+  </td> 
+ </tr> 
+</table> 
+
+<p>Столбец pgsz определяет размер области в страницах, а
+столбец valid -число страниц этой
+области, находящихся в оперативной памяти. Как мож&shy;но заметить, для сегментов данных и стека страниц недостаточно, поэтому
+может возникнуть ситуация, когда процессу потребуется обращение к адре&shy;су, в настоящее время отсутствующему в памяти. Заметим также, что стол&shy;бец inox содержит индексы таблиц inode, указывающие на метаданные файлов, откуда было загружено содержимое
+соответствующих сегментов.</p> 
+
+<p>Мы можем взглянуть на дополнительные сведения об этом файле:</p> 
+
+<p>&gt;inode 154</p> 
+
+<p>INODE
+TABLE SIZE =
+472</p> 
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0
+ style='margin-left:2.0pt;border-collapse:collapse;mso-padding-alt:0cm 2.0pt 0cm 2.0pt'>
+ <tr style='mso-yfti-lastrow:yes;height:20.65pt'>
+  <td width=38 valign=top style='width:1.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>SLOT 154 
+  </p> 
+  </td> 
+  <td width=66 valign=top style='width:49.65pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>MAJ/MIN 1,42 </p> 
+  </td> 
+  <td width=28 valign=top style='width:20.65pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>FS 2 </p> 
+  </td> 
+  <td width=57 valign=top style='width:43.1pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>I NUMB 1562 
+  </p> 
+  </td> 
+  <td width=38 valign=top style='width:28.3pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>RCNT 3 </p> 
+  </td> 
+  <td width=39 valign=top style='width:29.3pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>LINK 1 </p> 
+  </td> 
+  <td width=34 valign=top style='width:25.45pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>UID 123 </p> 
+  </td> 
+  <td width=35 valign=top style='width:25.9pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>GID 56 </p> 
+  </td> 
+  <td width=40 valign=top style='width:29.75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>SIZE 8972 </p> 
+  </td> 
+  <td width=61 valign=top style='width:45.6pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>MODE f— 755 </p> 
+  </td> 
+  <td width=38 valign=top style='width:1.0cm;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>MNT 0 </p> 
+  </td> 
+  <td width=123 valign=top style='width:92.15pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:20.65pt'>
+  <p>M/ST FLAGS R130 tx </p> 
+  </td> 
+ </tr> 
+</table> 
+
+<p>Из этой таблицы мы можем определить файловую систему, в которой рас&shy;положен файл (maj/min), а также номер его дискового inode -&nbsp; numb. В данном случае он равен 1562. Выполнив команду ncheck(l), мы узнаем имя исполняемого файла, соответствующего исследуемому процессу:</p> 
+
+<p>$ ncheck -i 1562</p> 
+
+<p>/de/root:</p> 
+
+<p>1562&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /home/andrei/CH3/test</p> 
+
+<p>Замещение страниц</p> 
+
+<p>Ранние версии UNIX работали на компьютерах PDP-11 с 16-разрядной
+архитектурой и адресным пространством 64 Кбайт. Некоторые модифика&shy;ции позволяли использовать отдельные адресные пространства для кода и
+данных, накладывая тем не менее существенные ограничения на размер адресного пространства процесса. Это привело к разработке различных схем программных оверлеев (overlay), использовавшихся как для прикладных задач, так и для ядра
+операционной системы. Суть этих методов заключа&shy;ется в том, что в
+неиспользуемые участки адресного пространства процес&shy;са записываются другие
+части програмы. Например, после запуска сис&shy;темы необходимость в
+функциях начальной инициализации отпадает и часть памяти, содержащая этот код, может
+быть использована для хране&shy;ния других
+данных или инструкций операционной системы. Не говоря о значительной сложности такого подхода для
+разработчиков программного обеспечения,
+использование этих методов приводило к низкой переносимости программ, поскольку они в значительной
+степени зависели от кон&shy;кретной организации памяти. Порой даже
+расширение оперативной памя&shy;ти требовало внесения модификаций в программное
+обеспечение.</p> 
+
+<p>Механизмы управления памятью сводились к использованию свопинга.
+Процессы загружались в непрерывные области оперативной памяти цели&shy;ком, выгружался
+процесс также целиком. Только небольшое число про&shy;цессов могло быть одновременно размещено в памяти, и при запуске про&shy;цесса на выполнение, несколько других процессов
+необходимо было пере&shy;местить во
+вторичную память. Схема управления памятью, основанная на механизме свопинга, показана на рис. 3.11.</p> 
+
+<p><img width=436 height=496
+src="2part3!.files/image004.jpg" v:shapes="_x0000_i1026"></p> 
+
+<p>Механизм страничного замещения по требованию был реализован в UNIX в 1978 году на новом компьютере VAX-11/780, имевшем 32-разрядную архитектуру, 4 Гбайт
+адресуемого пространства и аппаратную поддержку страничного
+механизма. Первой системой UNIX, в которой управление памятью основывалось на страничном замещении по требованию, явилась версия 3.xBSD. Уже в середине 80-х годов все основные версии UNIX обеспечивали
+страничное замещение в качестве основного механизма, ос&shy;тавляя свопингу вторую роль.</p> 
+
+<p>Как уже говорилось в системах с виртуальной памятью, основанной на страничном механизме, адресное пространство процесса разделено на по&shy;следовательные участки равной длины, называемыми страницами. Такая же организация присуща и физической памяти, и в конечном итоге любое место физической памяти адресуется номером страницы и смещением в ней. Деление адресного пространства процесса является логическим, при&shy;чем логическим последовательным страницам виртуальной памяти при поддержке операционной системы и аппаратуры (MMU процессора) ста-вятся в соответствие определенные физические страницы оперативной па&shy;мяти.
+Эта операция получила название трансляции
+адреса.</p> 
+
+<p>Однако механизм
+трансляции адреса является первым условием реализа&shy;ции виртуальной памяти, позволяя отделить виртуальное адресное про&shy;странство процесса от физического адресного
+пространства процессора. Вторым условием является возможность выполнения
+процесса, чье адрес&shy;ное пространство не имеет полного отображения на физическую
+память. Чтобы удовлетворить второму
+условию, каждая страница виртуальной па&shy;мяти имеет флаг присутствия в оперативной памяти. Если адресуемая страница отсутствует в памяти, аппаратура
+генерирует страничную ошиб&shy;ку,
+которая обрабатывается операционной системой, в конечном итоге приводя к размещению этой страницы в памяти. Таким
+образом, для вы&shy;полнения процесса является необходимым присутствие в памяти
+лишь не&shy;скольких страниц процесса, к которым в данный момент происходит об&shy;ращение (рис. 3.12).</p> 
+
+<p>Вообще говоря, конкретный механизм страничного замещения зависит от того, как
+реализованы три основных принципа:</p> 
+
+<ol type="1">
+    <li>При каких условиях система загружает страницы в память, т. н. прин 
+цип загрузки (fetch policy).</li>
+    <li>В каких участках памяти система
+размещает страницы, т. н. принцип 
+размещения (placement policy).</li>
+    <li>Каким образом система выбирает
+страницы, которые требуется осво 
+бодить из памяти, когда отсутствуют свободные страницы
+для разме 
+щения (или их число меньше некоторого порогового
+значения), т. н. 
+принцип замещения (replacement policy).</li>
+</ol>
+<p>Обычно все физические страницы одинаково подходят для размещения, и
+принцип размещения не оказывает существенного влияния на работу ме&shy;ханизма в целом.
+Таким образом эффективность управления памятью полностью зависит от двух остальных принципов: загрузки и замещения. В системах с чистым страничным замещением по
+требованию в память по&shy;мещаются только требуемые страницы, а замещение
+производится, когда полностью отсутствует свободная оперативная память.
+Соответственно, производительность таких систем полностью зависит от реализации
+прин&shy;ципа замещения. Однако
+большинство современных версий UNIX не ис&shy;пользуют чистого страничного замещения
+по требованию. Вместо этого принцип загрузки предполагает размещение сразу
+нескольких страниц, обращение к которым наиболее вероятно в ближайшее время, а
+замещение производится до того, как память будет
+полностью занята.</p> 
+
+<p><img width=492 height=321
+src="2part3!.files/image006.jpg" v:shapes="_x0000_i1027"></p> 
+
+<p>Описанный механизм управления памятью допускает ситуацию, когда
+суммарный размер всех выполняющихся в данный момент процессов пре&shy;вышает размер
+физической памяти, в которой располагается только часть страниц процессов.
+Содержимое остальных страниц хранится вне физиче&shy;ской памяти
+и должно быть загружено ядром, если процессу требуется доступ к этой части адресного пространства. Однако виртуальное адресное
+пространство процесса не зависит от фактического
+расположения физиче&shy;ских страниц, и его размещение
+производится ядром при создании про&shy;цесса или запуске
+новой программы. Виртуальное адресное пространство может изменяться в результате динамического размещения памяти (хипа)
+или увеличения стека процесса.</p> 
+
+<p>Таким образом, сам процесс &quot;видит&quot; только собственное
+виртуальное ад&shy;ресное пространство. Однако физические
+страницы, соответствующиеэтому адресному пространству могут в
+действительности располагаться в различных местах, как это показано на
+рис. 3.13.</p> 
+
+<p><img width=422 height=440
+src="2part3!.files/image008.jpg" v:shapes="_x0000_i1028"></p> 
+
+<p>Виртуальный
+адрес может быть ассоциирован со страницей физиче&shy;ской памяти. Обращение к виртуальным адресам из диапазона, соот&shy;ветствующего этой странице, приведет к обращению
+к соответствую&shy;щим адресам физической
+памяти. От операционной системы не требу&shy;ется дополнительных действий при
+обращении к такой странице. Страница
+может быть перемещена в область свопинга, если требуется освободить память для
+другого процесса. Обращение к виртуальному адресу, соответствующему этой странице, приведет к страничной ошибке,
+что, в свою очередь, потребует от ядра размещения новой страницы в памяти, записи ее содержимого из области свопинга и со&shy;ответствующего изменения карты отображения
+(записи таблицы стра&shy;ниц) таким образом, чтобы виртуальный адрес
+указывал на новую страницу. Если потребуется
+опять переместить такую страницу в область свопинга, ядро сделает это только в
+том случае, если с момента последней загрузки произошла модификация
+страницы.</p> 
+
+<p>Адресуемая страница отсутствует в
+памяти, но ее содержимое находится в файле на диске. Типичными примерами такой ситуации
+могут 
+служить страницы сегмента кода или области файлов,
+отображенных в 
+памяти. Обращение к виртуальному адресу, соответствующему
+этой 
+странице, приведет к страничной ошибке, что, в свою
+очередь, потре 
+бует от ядра размещения новой страницы в памяти, записи
+ее содер 
+жимого из файла и соответствующего изменения карты
+отображения 
+(записи таблицы страниц) таким образом, чтобы виртуальный
+адрес 
+указывал на новую страницу.</p> 
+
+<p>Адресуемая страница отсутствует в памяти и она не
+ассоциирована ни 
+с областью свопинга, ни с файлом. Типичным
+примером такой ситуации является страница сегмента
+неинициализированных данных. Об 
+ращение к такой странице потребует
+размещения новой страницы, заполненной нулями.</p> 
+
+<p>Ядро должно иметь достаточную информацию обо всех страницах, отсутст&shy;вующих
+в памяти для того, чтобы при необходимости загрузить их в память. Для страниц,
+перемещенных во вторичную память, необходимо знать их расположение в области свопинга. Ядро должно иметь возможность распо&shy;знать,
+что страницу необходимо заполнить нулями или загрузить ее содер&shy;жимое из файла. В последнем случае ядро должно хранить местонахождение файла в файловой системе. Таким образом, наряду с картами отображения, необходимыми для трансляции адреса, ядро хранит ряд структур данных для
+поиска и загрузки отсутствующих в памяти страниц.</p> 
+
+<p>Различные версии
+UNIX используют разные подходы. Например, в SCO UNIX для описания страниц используются структуры pfdat и связанные с ними дескрипторы дисковых блоков. В UNIX 4.3BSD для этого исполь&shy;зуются поля записи таблицы страниц.</p> 
+
+<p>Страничное замещение имеет ряд важных преимуществ по сравнению со свопингом:</p> 
+
+<p>О Размер программы ограничивается лишь
+размером виртуальной па&shy;мяти, который для компьютеров с
+32-разрядной архитектурой со&shy;ставляет 4 Гбайт.</p> 
+
+<p>- Запуск программы происходит очень быстро,
+т. к. не требуется за&shy;гружать в память всю программу
+целиком.</p> 
+
+<p>- Значительно большее число программ может
+быть загружено и вы&shy;полняться одновременно, т. к. для
+выполнения каждой из них в ка&shy;ждый момент времени достаточно всего нескольких
+страниц.</p> 
+
+<p>- Перемещение отдельных страниц между
+оперативной и вторичной памятью требует значительно меньших затрат, чем перемещение
+процесса целиком.</p> 
+
+<p>Планирование
+выполнения процессов</p> 
+
+<p>Как и
+оперативная память, процессор является разделяемым ресурсом, ко-торый должен&nbsp;
+быть&nbsp; справедливо&nbsp; распределен&nbsp;
+между&nbsp; конкурирующими процессами. Планировщик процессов как раз и
+является той подсистемой ядра,
+которая обеспечивает предоставление процессорных ресурсов про&shy;цессам, выполняющимся в операционной системе. UNIX является систе- мой разделения времени, это означает,
+что каждому процессу вычисли- ] тельные ресурсы
+выделяются на ограниченный промежуток времени, по&shy;сле чего они предоставляются другому процессу и т. д. Максимальный временной интервал, на который процесс может захватить процессор, на&shy;зывается временным квантом (time quantum или time slice). Таким образом создается
+иллюзия, что процессы выполняются одновременно, хотя в дей&shy;ствительности в каждый момент времени выполняется
+только один (на однопроцессорной
+системе) процесс.</p> 
+
+<p>UNIX является многозадачной
+системой, а это значит, что одновременно выполняются несколько приложений.
+Очевидно, что приложения предъ&shy;являют различные требования к системе с
+точки зрения их планирования и общей производительности. Можно
+выделить три основных класса при&shy;ложений:</p> 
+
+<p>- Интерактивные
+приложения. К этому классу относятся командные интерпретаторы, текстовые редакторы и другие программы, непо&shy;средственно
+взаимодействующие с пользователем. Такие приложения большую часть времени
+обычно проводят в ожидании пользователь&shy;ского ввода,
+например, нажатия клавиш клавиатуры или действия мышью.
+Однако они должны достаточно быстро обрабатывать такие действия, обеспечивая комфортное для пользователя время реакции. Допустимая задержка для таких приложений составляет от 100 до 200 миллисекунд.</p> 
+
+<p>- Фоновые
+приложения. К этому классу можно отнести приложения, не требующие вмешательства пользователя. Примерами таких задач могут служить компиляция программного обеспечения и сложные
+вычислительные программы. Для этих приложений важно миними&shy;зировать суммарное
+время выполнения в системе, загруженной дру&shy;гими процессами, порожденными, в
+частности, интерактивными за&shy;дачами. Более того, предпочтительной
+является ситуация, когда ин&shy;терактивные приложения не оказывают
+существенного влияния на среднюю производительность задач данного класса.</p> 
+
+<p>- Приложения
+реального времени. Хотя система UNIX изначально раз&shy;рабатывалась
+как операционная система разделения времени, ряд приложений
+требуют дополнительных системных возможностей, в частности, гарантированного
+времени совершения той или иной операции,
+времени отклика и т. п. Примером могут служить измери&shy;тельные комплексы или системы управления.
+Видеоприложения также могут обладать определенными ограничениями на время обра&shy;ботки кадра изображения.</p> 
+
+<p>Планирование
+процессов построено на определенном наборе правил, ис&shy;ходя из которых планировщик выбирает, когда и какому процессу предос&shy;тавить
+вычислительные ресурсы системы. При этом желательным является удовлетворение нескольких требований, например,
+минимальное время отклика для
+интерактивных приложений, высокая производительность для фоновых задач и
+т. п. Большинство из этих требований не могут быть полностью удовлетворены одновременно, поэтому в задачу планировщика процессов входит нахождение &quot;золотой
+середины&quot;, обеспечивающей мак&shy;симальную
+эффективность и производительность системы в целом.</p> 
+
+<p>В этом разделе мы рассмотрим основные принципы и механизмы плани&shy;рования в традиционных UNIX-системах. Начнем с обработки прерыва&shy;ний таймера, поскольку именно здесь инициируются функции планирова&shy;ния и ряд других действий, например, отложенные вызовы (callout) и алармы (alarm).</p> 
+
+<h3>Принципы планирования процессов</h3>
+<p>Традиционные алгоритмы планирования UNIX обеспечивают
+возможность одновременного выполнения интерактивных и
+фоновых приложений. Та&shy;ким образом, они хорошо подходят для
+систем общего назначения с не&shy;сколькими подключенными
+пользователями, работающими с текстовыми и графическими редакторами,
+компилирующими программы и выпол&shy;няющими
+вычислительные задачи. Эти алгоритмы обеспечивают малое время реакции
+для интерактивных приложений, следя в то же время, что&shy;бы фоновым громоздким задачам справедливо предоставлялись ресурсы системы.
+Современные системы поддерживают выполнение задач реаль&shy;ного времени, однако в данном разделе мы остановимся на планировании
+системы разделения времени.</p> 
+
+<p>Планирование процессов в UNIX основано на приоритете процесса.
+Пла&shy;нировщик всегда выбирает процесс с наивысшим приоритетом.
+Приоритет процесса не является фиксированным и
+динамически изменяется систе&shy;мой в зависимости от использования
+вычислительных ресурсов, времени ожидания запуска и
+текущего состояния процесса. Если процесс готов к запуску и имеет наивысший приоритет,
+планировщик приостановит вы&shy;полнение текущего процесса (с более
+низким приоритетом), даже если последний не &quot;выработал&quot; свой
+временной квант.</p> 
+
+<p>Традиционно ядро UNIX является
+&quot;непрерываемым&quot; (nonpreemptive). Это означает, что процесс,
+находящийся в режиме ядра (в результате систем&shy;ного вызова или прерывания) и выполняющий системные инструкции, не может быть прерван системой, а вычислительные
+ресурсы переданы друго&shy;му, более
+высокоприоритетному процессу. В этом состоянии выполняю&shy;щийся процесс
+может освободить процессор &quot;по собственному желанию&quot;, в результате
+недоступности какого-либо ресурса перейдя в состояние сна. В противном случае система может прервать
+выполнение процесса только при
+переходе из режима ядра в режим задачи. Такой подход значительно упрощает решение задач синхронизации и поддержания
+целостности структур данных ядра.</p> 
+
+<p>Каждый процесс имеет два атрибута приоритета: текущий приоритет, на основании которого
+происходит планирование, и заказанный относитель&shy;ный
+приоритет, называемый nice number (или просто nice), который зада&shy;ется при
+порождении процесса и влияет на текущий приоритет.</p> 
+
+<p>Текущий приоритет варьируется в диапазоне от 0 (низкий приоритет) до 127 (наивысший приоритет). Процессы, выполняющиеся в режиме задачи,
+имеют более низкий приоритет, чем в режиме ядра. Для режима задачи приоритет меняется в диапазоне 0—65, для режима ядра — 66—95 (систем&shy;ный диапазон).</p> 
+
+<p>Процессы, приоритеты которых лежат в диапазоне 96—127, являются процессами с фиксированным приоритетом, не изменяемым операцион&shy;ной системой, и
+предназначены для поддержки приложений реального времени7.</p> 
+
+<p>Процессу, ожидающему недоступного в данный момент ресурса, система определяет значение приоритета
+сна, выбираемое ядром из диапазона сис&shy;темных приоритетов и
+связанное с событием, вызвавшее это состояние. В табл. 3.3 приведены значения
+приоритетов сна для систем 4.3BSD UNIX и SCO UNIX
+(OpenServer 5.0). Заметим, что направление роста значений
+приоритета для этих систем различно — в BSD UNIX большему значению соответствует более низкий приоритет.</p> 
+
+<p>Схема нумерации текущих приоритетов различна для различных версий UNIX. Например, более высокому значению текущего приоритета может соответствовать
+более низкий фак&shy;тический приоритет
+планирования. Разделение между приоритетами режима ядра и задачи также зависит от версии. Здесь мы привели схему,
+используемую в SCO UNIX, при кото&shy;рой большему
+значению соответствует более высокий приоритет.</p> 
+
+<p>Таблица 3.3. Системные приоритеты сна</p> 
+
+<div class=Section1>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0
+ style='margin-left:2.0pt;border-collapse:collapse;mso-padding-alt:0cm 2.0pt 0cm 2.0pt'>
+ <tr style='height:31.2pt'>
+  <td width=321 valign=top style='width:241.0pt;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:31.2pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.15pt'>Событие</span>
+  </p>
+  </td>
+  <td width=132 valign=top style='width:99.2pt;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:31.2pt'>
+  <p class=Normal style='margin-right:1.7pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:.15pt'>Приоритет </span><span lang=EN-US style='font-family:
+  Arial;mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.15pt;
+  mso-ansi-language:EN-US'>4.3BSD UNIX</span> </p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:31.2pt'>
+  <p class=Normal style='margin-left:2.4pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:.1pt'>Приоритет </span><span lang=EN-US style='font-family:
+  Arial;mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.25pt;
+  mso-ansi-language:EN-US'>SCO UNIX<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </span>|</span> </p>
+  </td>
+ </tr>
+ <tr style='height:25.9pt'>
+  <td width=321 valign=top style='width:241.0pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:25.9pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black'>Ожидание<span
+  style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>загрузки<span
+  style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>в<span
+  style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;
+  </span>память<span
+  style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>сегмен&shy;<span
+  style='letter-spacing:-.05pt'>та/страницы (свопинг/страничное замещение)</span></span>
+  </p>
+  </td>
+  <td width=132 valign=top style='width:99.2pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:25.9pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black'>0</span> </p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:25.9pt'>
+  <p class=Normal style='margin-left:2.4pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'>95</span>
+  </p>
+  </td>
+ </tr>
+ <tr style='height:15.35pt'>
+  <td width=321 valign=top style='width:241.0pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.05pt'>Ожидание
+  индексного дескриптора</span> </p>
+  </td>
+  <td width=132 valign=top style='width:99.2pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black'>10</span> </p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:2.4pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'>88</span>
+  </p>
+  </td>
+ </tr>
+ <tr style='height:15.35pt'>
+  <td width=321 valign=top style='width:241.0pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.15pt'>Ожидание
+  ввода/вывода</span> </p>
+  </td>
+  <td width=132 valign=top style='width:99.2pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black'>20</span> </p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:2.65pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'>81</span>
+  </p>
+  </td>
+ </tr>
+ <tr style='height:15.35pt'>
+  <td width=321 valign=top style='width:241.0pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.15pt'>Ожидание
+  буфера</span> </p>
+  </td>
+  <td width=132 valign=top style='width:99.2pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black'>30</span> </p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:2.65pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'>80</span>
+  </p>
+  </td>
+ </tr>
+ <tr style='height:15.35pt'>
+  <td width=321 valign=top style='width:241.0pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.1pt'>Ожидание
+  терминального ввода</span> </p>
+  </td>
+  <td width=132 valign=top style='width:99.2pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><o:p>&nbsp;</o:p></p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:2.65pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'>75</span>
+  </p>
+  </td>
+ </tr>
+ <tr style='height:14.9pt'>
+  <td width=321 valign=top style='width:241.0pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:14.9pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.15pt'>Ожидание
+  терминального вывода</span> </p>
+  </td>
+  <td width=132 valign=top style='width:99.2pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:14.9pt'>
+  <p class=Normal style='background:white'><o:p>&nbsp;</o:p></p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:14.9pt'>
+  <p class=Normal style='margin-left:2.9pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:-.2pt'>74<span
+  style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+  style='mso-spacerun:yes'>&nbsp;</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.35pt'>
+  <td width=321 valign=top style='width:241.0pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.15pt'>Ожидание
+  завершения выполнения</span> </p>
+  </td>
+  <td width=132 valign=top style='width:99.2pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='background:white'><o:p>&nbsp;</o:p></p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:15.35pt'>
+  <p class=Normal style='margin-left:2.9pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:-.3pt'>73<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span
+  style='mso-spacerun:yes'>&nbsp;</span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-lastrow:yes;height:27.35pt'>
+  <td width=321 valign=top style='width:241.0pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:27.35pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:.15pt'>Ожидание
+  события — низкоприоритетное со&shy;</span><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.1pt'>стояние
+  сна</span> </p>
+  </td>
+  <td width=132 valign=top style='width:99.2pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:27.35pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black'>40</span> </p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:27.35pt'>
+  <p class=Normal style='margin-left:2.9pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'>66</span>
+  </p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p>Когда процесс пробуждается, ядро устанавливает значение текущего при&shy;оритета процесса равным приоритету сна. Поскольку приоритет такого процесса
+находится в системном диапазоне и выше, чем приоритет режи&shy;ма задачи, вероятность предоставления процессу
+вычислительных ресурсов весьма велика. Такой подход позволяет, в частности,
+быстро завершить системный вызов,
+выполнение которого, в свою очередь, может блокиро&shy;вать некоторые системные ресурсы.</p> 
+
+<p>После завершения системного вызова перед возвращением в режим задачи
+ядро восстанавливает приоритет режима задачи, сохраненный перед вы&shy;полнением системного вызова. Это может привести к понижению приори&shy;тета, что, в свою очередь, вызовет переключение контекста.</p> 
+
+<p>Текущий
+приоритет процесса в режиме задачи p_priuser
+зависит
+от двух факторов: значения nice number и степени использования вычислительных ресурсов р_срu:</p> 
+
+<p>p_priuser&nbsp; =&nbsp;
+a*p_nice&nbsp; - b*p_cpu, где p_nice — постоянная составляющая, зависящая от параметра nice<sup>8</sup>.</p> 
+
+<p>Задача планировщика разделения времени — справедливо распределить вычислительный ресурс между конкурирующими процессами. Для приня&shy;тия решения о выборе следующего запускаемого процесса планировщику необходима информация об использовании процессора. Эта составляющая</p> 
+
+<p><font size="2">Мы специально не выделили явно параметр nice по следующей
+причине. Традиционно, большему значению параметра nice соответствует меньший приоритет, это уже обсужда&shy;лось в главе 1. В данном обсуждении выбрана схема, при которой большему
+значению р_срu соответствует больший приоритет. Поэтому в
+простейшем случае коэффициент а является
+отрицательным, a p_nice равно значению параметра тсс (nice number).</font></p> 
+
+<p>приоритета уменьшается
+обработчиком прерываний таймера каждый тик. Таким образом, пока процесс
+выполняется в режиме задачи, его текущий приоритет линейно уменьшается.</p> 
+
+<p>Каждую секунду ядро пересчитывает текущие приоритеты процессов, го&shy;товых к запуску (приоритеты которых меньше 65), последовательно увели&shy;чивая их<sup>9</sup>. Это перемещает процессы в более приоритетные
+очереди и по&shy;вышает вероятность их последующего запуска.</p> 
+
+<p>Например, UNIX версии SVR3, использует следующую формулу:</p> 
+
+<p>p_cpu = p_cpu/2</p> 
+
+<p>Эта простая схема проявляет недостаток нивелирования приоритетов при повышении загрузки системы. Это происходит потому, что в этом случае каждый процесс получает незначительный объем вычислительных ресур&shy;сов и следовательно имеет малую составляющую р_срu, которая
+еще более уменьшается благодаря формуле пересчета р_срu. В
+результате степень использования процессора перестает
+оказывать заметное влияние на приоритет, и
+низкоприоритетные процессы (т. е. процессы с высоким nice number) практически &quot;отлучаются&quot; от
+вычислительных ресурсов системы.</p> 
+
+<p>В 4.3BSD UNIX для пересчета р_срu используется другая формула:</p> 
+
+<p>p_cpu&nbsp;
+=&nbsp; p_cpu*(2*load)/(2*load+l)</p> 
+
+<p>Здесь параметр load равен среднему числу процессов, находившихся
+в очереди на выполнение за последнюю секунду, и
+характеризует среднюю загрузку системы за этот период времени. Этот алгоритм
+позволяет час&shy;тично избавиться от недостатка
+планирования SVR3, поскольку при зна&shy;чительной загрузке системы уменьшение р_срu при
+пересчете будет про&shy;исходить медленнее.</p> 
+
+<p>Описанные алгоритмы планирования позволяют учесть интересы
+низкоприоритетных процессов, т. к. в результате длительного ожидания очереди на запуск приоритет таких процессов увеличивается, соответственно уве&shy;личивается
+и вероятность запуска. Представленные алгоритмы также обес&shy;печивают более вероятный выбор планировщиком интерактивных процессов по
+отношению к вычислительным (фоновым). Такие задачи, как ко&shy;мандный интерпретатор или редактор, большую часть времени проводят в ожидании ввода, имея, таким образом, высокий приоритет (приоритет сна). При наступлении ожидаемого события (например, пользователь осу&shy;ществил
+ввод данных) им сразу же предоставляются вычислительные ре&shy;сурсы. Фоновые
+процессы, потребляющие значительные ресурсы процес&shy;сора, имеют высокую
+составляющую р_срu и, как следствие, более низкий приоритет.</p> 
+
+<p><sup><font size="2">9</font></sup><font size="2">&nbsp; Ядро&nbsp;&nbsp; последовательно&nbsp;&nbsp; уменьшает&nbsp;
+отрицательную&nbsp;&nbsp; компоненту&nbsp;&nbsp; времени&nbsp;&nbsp;
+использования процессора.</font></p> 
+
+<p>Как правило, очередь на
+выполнение не одна. Например, SCO UNIX име-ет 127 очередей — по одной на каждый
+приоритет. BSD UNIX использует 32 очереди, каждая из которых обслуживает диапазон
+приоритетов, на-пример 0—3, 4—7 и т.
+д. При выборе следующего процесса на выполнение из одной очереди, т. е. из нескольких процессов с одинаковым текущим приоритетом, используется механизм <i>кругового чередования</i> (round robin)<sup>10</sup>. Этот механизм
+запускается ядром через каждый временной квант для наиболее приоритетной
+очереди. Однако если в системе появляется готовый к запуску процесс с более высоким приоритетом, чем текущий, он будет за&shy;пущен, не дожидаясь прошествия временного кванта.
+С другой стороны, если все процессы, готовые
+к запуску, находятся в низкоприоритетных по отношению к текущему процессу очередях, последний будет продолжать выполняться и в течение следующего временного
+кванта.</p> 
+
+<h3>Создание
+процесса</h3>
+<p>Как уже обсуждалось, в UNIX проведена четкая грань между программой и процессом. Каждый процесс в
+конкретный момент времени выполняет ин&shy;струкции некоторой
+программы, которая может быть одной и той же для нескольких
+процессов<sup>11</sup>. Примером может служить командный интерпре&shy;татор, с которым одновременно работают несколько пользователей, таким образом инструкции программы shell выполняют несколько различных процессов. Такие процессы могут совместно использовать один сегмент кода в памяти, но в остальном они являются изолированными друг от друга и имеют собственные сегменты данных и стека.</p> 
+
+<p>В любой момент процесс может запустить другую программу и начать вы&shy;полнять ее
+инструкции; такую операцию он может сделать несколько раз.</p> 
+
+<p>В операционной системе UNIX имеются отдельные системные вызовы для создания
+(порождения) процесса, и для запуска новой программы. Сис&shy;темный вызов fork(2) создает новый процесс, который является точной ко&shy;пией родителя. После возвращения из системного вызова оба процесса
+выполняют инструкции одной и той же программы и имеют одинаковые сегменты
+данных и стека.</p> 
+
+<p>Тем не менее между родительским и дочерним процессом имеется ряд различий:</p> 
+
+<p>-&nbsp;&nbsp; Дочернему процессу
+присваивается уникальный идентификатор PID, отличный от
+родительского.</p> 
+
+<p><sup><font size="2">10&nbsp; </font></sup><font size="2">Round robin (англ.) означает петицию, подписи под которой располагаются по кругу - 
+чтобы нельзя было определить, кто подписался первым.
+Отсюда и название схемы выбора 
+процессов.</font></p> 
+
+<p> Естественно, речь здесь идет о выполнении в режиме задачи, в режиме ядра
+процесс вы&shy;<br> 
+полняет инструкции ядра операционной системы.</p> 
+
+<p>О Соответственно и
+идентификатор родительского процесса PPID для родителя и потомка
+различны.</p> 
+
+<p>О Дочерний процесс получает собственную копию u-area и, в частно&shy;сти, собственные файловые дескрипторы, хотя он разделяет те же записи файловой таблицы.</p> 
+
+<p>- Для дочернего процесса очищаются
+все ожидающие доставки сигналы.</p> 
+
+<p>- Временная статистика выполнения
+процесса в режиме ядра и задачи для
+дочернего процесса обнуляется.</p> 
+
+<p>- Блокировки памяти и записей, установленные
+родительским процес&shy;сом, потомком не наследуются.</p> 
+
+<p>Более подробно наследуемые характеристики представлены в табл. 3.4. Таблица 3.4. Наследование установок при создании процесса и запуске программы</p> 
+
+
+
+<div class=Section1>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0
+ style='margin-left:2.0pt;border-collapse:collapse;mso-padding-alt:0cm 2.0pt 0cm 2.0pt'>
+ <tr style='height:30.25pt'>
+  <td valign=top style='width:163.05pt;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:30.25pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.3pt'>Атрибут</span> </p>
+  </td>
+  <td valign=top style='width:120.45pt;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:30.25pt'>
+  <p class=Normal style='text-indent:.25pt;background:white'><span
+  style='color:black;letter-spacing:-.15pt'>Наследование по&shy;</span><span
+  style='color:black;letter-spacing:.05pt'>томком </span><i style='mso-bidi-font-style:
+  normal'><span lang=EN-US style='color:black;letter-spacing:.05pt;mso-ansi-language:
+  EN-US'>(fork(2))</span></i> </p>
+  </td>
+  <td valign=top style='width:155.95pt;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:30.25pt'>
+  <p class=Normal style='margin-left:2.15pt;text-indent:-.25pt;background:white'><span
+  style='color:black'>Сохранение при запус&shy;<span style='letter-spacing:-.1pt'>ке
+  программы <i style='mso-bidi-font-style:normal'>(ехес(2))</i></span></span> </p>
+  </td>
+ </tr>
+ <tr style='height:15.85pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.85pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.1pt'>Сегмент кода </span><span lang=EN-US style='color:black;letter-spacing:
+  -.1pt;mso-ansi-language:EN-US'>(text)</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.85pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.15pt'>Да, разделяемый</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.85pt'>
+  <p class=Normal style='margin-left:2.4pt;background:white'><span
+  style='color:black'>Нет</span> </p>
+  </td>
+ </tr>
+ <tr style='height:25.45pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.15pt'>Сегмент данных </span><span lang=EN-US style='color:black;letter-spacing:
+  -.15pt;mso-ansi-language:EN-US'>(data)</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='margin-top:0cm;margin-right:1.9pt;margin-bottom:0cm;
+  margin-left:.25pt;margin-bottom:.0001pt;text-indent:-.25pt;background:white'><span
+  style='color:black;letter-spacing:-.05pt'>Да, копируется при </span><span
+  style='color:black;letter-spacing:-.1pt'>записи </span><span lang=EN-US
+  style='color:black;letter-spacing:-.1pt;mso-ansi-language:EN-US'>(copy-on-write)</span>
+  </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='margin-left:2.65pt;background:white'><span
+  style='color:black'>Нет</span> </p>
+  </td>
+ </tr>
+ <tr style='height:15.35pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.15pt'>Окружение</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:2.65pt;background:white'><span
+  style='color:black;letter-spacing:-.05pt'>Возможно</span> </p>
+  </td>
+ </tr>
+ <tr style='height:15.35pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.2pt'>Аргументы</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:2.4pt;background:white'><span
+  style='color:black'>Возможно</span> </p>
+  </td>
+ </tr>
+ <tr style='height:25.45pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='text-indent:.25pt;background:white'><span
+  style='color:black;letter-spacing:-.1pt'>Идентификатор<span
+  style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>пользова&shy;</span><span style='color:black;
+  letter-spacing:-.3pt'>теля </span><span lang=EN-US style='color:black;
+  letter-spacing:-.3pt;mso-ansi-language:EN-US'>UID</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='margin-left:1.9pt;background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+ </tr>
+ <tr style='height:14.9pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.15pt'>Идентификатор группы </span><span lang=EN-US style='color:black;
+  letter-spacing:-.15pt;mso-ansi-language:EN-US'>GID</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='margin-left:2.15pt;background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+ </tr>
+ <tr style='height:25.45pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.05pt'>Эффективный<span style='mso-spacerun:yes'>&nbsp; </span>идентифика&shy;</span><span
+  style='color:black;letter-spacing:-.15pt'>тор пользователя </span><span
+  lang=EN-US style='color:black;letter-spacing:-.15pt;mso-ansi-language:EN-US'>EUID</span>
+  </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
+  0cm;margin-left:2.15pt;margin-bottom:.0001pt;text-indent:-.25pt;background:
+  white'><span style='color:black;letter-spacing:.1pt'>Да </span><span
+  style='color:black;letter-spacing:-.15pt'>(Нет, при вызове </span><i
+  style='mso-bidi-font-style:normal'><span lang=EN-US style='color:black;
+  letter-spacing:-.15pt;mso-ansi-language:EN-US'>setuid(2))</span></i> </p>
+  </td>
+ </tr>
+ <tr style='height:25.9pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.9pt'>
+  <p class=Normal style='text-indent:.25pt;background:white'><span
+  style='color:black;letter-spacing:-.05pt'>Эффективный<span
+  style='mso-spacerun:yes'>&nbsp; </span>идентифика&shy;</span><span style='color:black;
+  letter-spacing:-.1pt'>тор группы </span><span lang=EN-US style='color:black;
+  letter-spacing:-.1pt;mso-ansi-language:EN-US'>EGID</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.9pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.9pt'>
+  <p class=Normal style='margin-top:0cm;margin-right:15.85pt;margin-bottom:
+  0cm;margin-left:2.4pt;margin-bottom:.0001pt;background:white'><span style='color:black;letter-spacing:.1pt'>Да </span><span style='color:black;
+  letter-spacing:-.15pt'>(Нет, при вызове </span><i style='mso-bidi-font-style:
+  normal'><span lang=EN-US style='color:black;letter-spacing:-.15pt;mso-ansi-language:
+  EN-US'>setgid(2))</span></i> </p>
+  </td>
+ </tr>
+ <tr style='height:15.35pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='color:black;
+  letter-spacing:-.15pt;mso-ansi-language:EN-US'>ID </span><span
+  style='color:black;letter-spacing:-.15pt'>процесса (Р</span><span
+  lang=EN-US style='color:black;letter-spacing:-.15pt;mso-ansi-language:EN-US'>ID)</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Нет</span>
+  </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:15.35pt'>
+  <p class=Normal style='margin-left:2.4pt;background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+ </tr>
+ <tr style='height:14.9pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='background:white'><span lang=EN-US style='color:black;
+  letter-spacing:-.1pt;mso-ansi-language:EN-US'>ID </span><span
+  style='color:black;letter-spacing:-.1pt'>группы процессов</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='margin-left:2.4pt;background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+ </tr>
+ <tr style='height:25.45pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='text-indent:.5pt;background:white'><span lang=EN-US
+  style='color:black;letter-spacing:.15pt;mso-ansi-language:EN-US'>ID </span><span
+  style='color:black;letter-spacing:.15pt'>родительского процесса </span><span
+  lang=EN-US style='color:black;letter-spacing:-.4pt;mso-ansi-language:EN-US'>(PPID)</span>
+  </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Нет</span>
+  </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='margin-left:2.4pt;background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+ </tr>
+ <tr style='height:14.9pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.1pt'>Приоритет </span><span lang=EN-US style='color:black;letter-spacing:
+  -.1pt;mso-ansi-language:EN-US'>nice number</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:14.9pt'>
+  <p class=Normal style='margin-left:2.4pt;background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+ </tr>
+ <tr style='height:25.45pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='text-indent:3.85pt;background:white'><span
+  style='color:black;letter-spacing:.25pt'>Права доступа к создавае-</span><span
+  style='color:black;letter-spacing:-.15pt'>мому файлу</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='margin-left:2.65pt;background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+ </tr>
+ <tr style='height:25.45pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.05pt'>Ограничение<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>на<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>размер </span><span style='color:black;
+  letter-spacing:-.15pt'>файла</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:25.45pt'>
+  <p class=Normal style='margin-left:2.4pt;background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+ </tr>
+ <tr style='height:24.5pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:24.5pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.25pt'>Сигналы,<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>обрабатываемые </span><span
+  style='color:black;letter-spacing:-.1pt'>по умолчанию</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:24.5pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:24.5pt'>
+  <p class=Normal style='margin-left:2.65pt;background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-lastrow:yes;height:16.8pt'>
+  <td width=217 valign=top style='width:163.05pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:16.8pt'>
+  <p class=Normal style='background:white'><span style='color:black;letter-spacing:
+  -.15pt'>Игнорируемые сигналы</span> </p>
+  </td>
+  <td width=161 valign=top style='width:120.45pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:16.8pt'>
+  <p class=Normal style='background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+  <td width=208 valign=top style='width:155.95pt;border:none;border-bottom:
+  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:
+  solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:16.8pt'>
+  <p class=Normal style='margin-left:2.65pt;background:white'><span
+  style='color:black'>Да</span> </p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p>Таблица 3.4 (продолжение)</p> 
+
+<div class=Section1>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0
+ style='margin-left:2.0pt;border-collapse:collapse;mso-padding-alt:0cm 2.0pt 0cm 2.0pt'>
+ <tr style='height:33.6pt'>
+  <td valign=top style='width:5.0cm;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:33.6pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.35pt'>Атрибут</span>
+  </p>
+  </td>
+  <td valign=top style='width:5.0cm;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:33.6pt'>
+  <p class=Normal style='margin-left:1.9pt;text-indent:.5pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:-.15pt'>Наследование по&shy;</span><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:.1pt'>томком
+  </span><i style='mso-bidi-font-style:normal'><span lang=EN-US
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:.1pt;mso-ansi-language:EN-US'>(fork(2))</span></i> </p>
+  </td>
+  <td valign=top style='width:184.3pt;border-top:solid windowtext 1.0pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-bottom-alt:solid windowtext .75pt;
+  background:white;padding:0cm 2.0pt 0cm 2.0pt;height:33.6pt'>
+  <p class=Normal style='text-align:justify;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:-.1pt'>Сохранение при запус&shy;ке программы <i style='mso-bidi-font-style:
+  normal'>(ехвс(2))</i></span> </p>
+  </td>
+ </tr>
+ <tr style='height:17.3pt'>
+  <td valign=top style='width:5.0cm;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:17.3pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.2pt'>Перехватываемые
+  сигналы</span> </p>
+  </td>
+  <td valign=top style='width:5.0cm;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:17.3pt'>
+  <p class=Normal style='margin-left:1.9pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'>Да</span>
+  </p>
+  </td>
+  <td valign=top style='width:184.3pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:17.3pt'>
+  <p class=Normal style='margin-right:111.6pt;text-align:justify;background:
+  white'><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black'>Нет</span> </p>
+  </td>
+ </tr>
+ <tr style='height:48.5pt'>
+  <td valign=top style='width:5.0cm;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:48.5pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.1pt'>Файловые
+  дескрипторы</span> </p>
+  </td>
+  <td valign=top style='width:5.0cm;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:48.5pt'>
+  <p class=Normal style='margin-left:1.7pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'>Да</span>
+  </p>
+  </td>
+  <td valign=top style='width:184.3pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:48.5pt'>
+  <p class=Normal style='margin-left:.25pt;text-align:justify;text-indent:-.25pt;
+  background:white'><span style='font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:.05pt'>Да, если для файлового де&shy;</span><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:.5pt'>скриптора не установлен </span><span style='font-family:
+  Arial;mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:.25pt'>флаг
+  </span><span lang=EN-US style='font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;text-transform:uppercase;letter-spacing:.25pt;mso-ansi-language:
+  EN-US'>fd_cloexec </span><span style='font-family:Arial;mso-bidi-font-family:
+  "Times New Roman";color:black;letter-spacing:.25pt'>(например, </span><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black'>с
+  помощью </span><i style='mso-bidi-font-style:normal'><span lang=EN-US
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  mso-ansi-language:EN-US'>fcntl(2))</span></i> </p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-lastrow:yes;height:51.35pt'>
+  <td valign=top style='width:5.0cm;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:51.35pt'>
+  <p class=Normal style='background:white'><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.1pt'>Файловые
+  указатели</span> </p>
+  </td>
+  <td valign=top style='width:5.0cm;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:51.35pt'>
+  <p class=Normal style='margin-left:1.9pt;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:-.05pt'>Да, разделяемые</span> </p>
+  </td>
+  <td valign=top style='width:184.3pt;border:none;border-bottom:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .75pt;mso-border-top-alt:solid windowtext .75pt;
+  mso-border-bottom-alt:solid windowtext .75pt;background:white;padding:0cm 2.0pt 0cm 2.0pt;
+  height:51.35pt'>
+  <p class=Normal style='text-align:justify;background:white'><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:.05pt'>Да, если для файлового де&shy;</span><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:.5pt'>скриптора не установлен </span><span style='font-family:
+  Arial;mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:-.2pt'>флаг
+  </span><span lang=EN-US style='font-family:Arial;mso-bidi-font-family:"Times New Roman";
+  color:black;letter-spacing:-.2pt;mso-ansi-language:EN-US'>FD_CLOEXEC </span><span
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:-.2pt'>(например, </span><span style='font-family:Arial;
+  mso-bidi-font-family:"Times New Roman";color:black;letter-spacing:.05pt'>с
+  помощью </span><i style='mso-bidi-font-style:normal'><span lang=EN-US
+  style='font-family:Arial;mso-bidi-font-family:"Times New Roman";color:black;
+  letter-spacing:.05pt;mso-ansi-language:EN-US'>fcntl(2))</span></i> </p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p>В общем случае вызов fork(2) выполняет следующие действия:</p>
+<p>-&nbsp;&nbsp; Резервирует место в области
+свопинга для сегмента данных и стека процесса. -&nbsp;&nbsp;
+Размещает новую запись ргос в таблице процессов и присваивает процессу
+уникальный идентификатор PID. -&nbsp;&nbsp; Инициализирует структуру
+ргос&nbsp; (поля&nbsp; структуры ргос&nbsp; подробно рассматривались в разделе &quot;Структуры данных процесса&quot;).</p> 
+
+<p>-&nbsp;&nbsp; Размещает карты отображения,
+необходимые для трансляции адреса.  Размещает u-area процесса и копирует ее содержимое с
+родительского. Создает соответствующие
+области процесса, часть из которых совпадает с
+родительскими.</p> 
+
+<p>-&nbsp;&nbsp; Инициализирует аппаратный
+контекст процесса, копируя его с родительского.</p> 
+
+<p>-&nbsp;&nbsp; Устанавливает в
+ноль возвращаемое дочернему процессу вызовом fork(2) значение.</p> 
+
+<p>-&nbsp;&nbsp; Устанавливает&nbsp;&nbsp;&nbsp; возвращаемое&nbsp;&nbsp;&nbsp; родительскому&nbsp;&nbsp;&nbsp; процессу&nbsp;&nbsp;&nbsp;
+вызовом fork(2) значение равным PID потомка.</p> 
+
+<p>-&nbsp;&nbsp; Помечает процесс готовым к
+запуску и помещает его в очередь на выполнение.</p> 
+
+<p>Системный вызов fork(2) в итоге создает
+для дочернего процесса отдель-ную копию
+адресного пространства родителя. Во многих случаях, вскоре после этого, дочерний процесс делает системный
+вызов ехвс(2) для запуска новой программы, при этом существующее адресное
+пространство унич-хшается и создается
+новое. Таким образом создание фактической копии адресного пространства
+процесса, т. е. выделение оперативной памяти и создание соответствующих карт
+отображения, является неоправданным.</p> 
+
+<p>Для решения данной проблемы используются два подхода. Первый из них, предложенный в UNIX System V, называется &quot;копирование при
+записи&quot; (copy-on-write
+или COW). Суть этого подхода заключается в том, что сег&shy;менты данных и стека родительского процесса помечаются доступными только для
+чтения, а дочерний процесс, хотя и получает собственные кар&shy;ты отображения,
+разделяет эти сегменты с родительским. Другими слова&shy;ми, сразу после создания
+процесса и родитель и потомок адресуют одни и те
+же страницы физической памяти. Если какой-либо из двух процессов попытается модифицировать данные или стек,
+возникнет страничная ошибка, поскольку страница открыта только для
+чтения, а не для записи. При этом будет
+запущен обработчик ошибки ядра, который создаст для процесса копию этой
+страницы, доступную для записи. Таким образом, фактическому копированию
+подлежат только модифицируемые страницы, а
+не все адресное пространство процесса. Если дочерний процесс делает системный вызов ехес(2) или вообще завершает свое выполнение, права доступа к страницам родителя, имеющим флаг COW, возвращаются к их прежним значениям (т. е. до создания
+дочернего процесса), а флаг COW очищается.</p> 
+
+<p>Другой подход используется в BSD UNIX. В этой версии системы был пред&shy;ложен новый системный вызов — vfork(2). Использование этого вызова име&shy;ет смысл, когда
+дочерний процесс сразу же выполняет вызов eхес(2) и за&shy;пускает
+новую программу. При вызове vfork(2) родительский процесс пре&shy;доставляет свое
+адресное пространство дочернему и переходит в состояние сна, пока последний не вернет его обратно. Далее дочерний процесс выпол&shy;няется в адресном пространстве родителя, пока не делает вызов ехес(2) или exit(2), после чего ядро возвращает адресное пространство родителю и про&shy;буждает
+его. С помощью vfork(2) можно
+добиться максимального быстродей&shy;ствия, т. к. в этом случае мы полностью
+избегаем копирования, даже для карт
+отображения. Вместо этого адресное пространство родительского процесса
+предоставляется потомку передачей нескольких аппаратных регистров, отвечающих
+за трансляцию адресов. Однако vfork(2) таит в себе потенциаль&shy;ную опасность, поскольку позволяет
+одному процессу использовать и даже модифицировать адресное пространство другого.</p> 
+
+<p>Для управления памятью процесса ядру необходимо соответствующим об&shy;разом задать
+области. При этом структуры pregion дочернего процесса,
+соответствующие разделяемым областям,
+указывают на те же структуры region, что и для
+родителя. Для областей, совместное использование ко&shy;торых недопустимо, ядро размещает отдельные структуры region для до&shy;чернего процесса (изначально копируя их
+содержимое с родительского) и устанавливает соответствующие
+указатели. На рис. 3.15 представлена схема этих операций.
+Заметим, что совместная работа и дублирование областей являются отдельным
+механизмом, не связанным с рассмотренными выше подходами,
+для совместного использования адресного пространства, на&shy;пример COW. Так, после создания отдельной копии неразделяемой области она по-прежнему будет адресовать те же страницы памяти, что и соот&shy;ветствующая область родителя.</p> 
+
+<p><img width=499 height=400
+src="2part3!.files/image010.jpg" v:shapes="_x0000_i1029"></p> 
+
+</body> 
+
+</html> 

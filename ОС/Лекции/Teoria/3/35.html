@@ -1,0 +1,315 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Использование%20редактора%20vi.files/filelist.xml">
+<title> Использование редактора vi</title>
+
+</head>
+
+<body lang=RU background=FON.gif  style='tab-interval:36.0pt'>
+
+<div class=Section1> 
+  <div align="center"><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU'><font size="5"><b>Использование 
+    редактора VI</b></font></span> 
+    <p><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><b>Текстовый редактор, это 
+      программа, используемая для редактирования файлов, которые содержат текст, 
+      например письма, С-программы или системные конфигурационные файлы. Хотя 
+      в Linux много всяких разных редакторов, единственный редактор, который вы 
+      с гарантией найдете в любом UNIX - это <i style='mso-bidi-font-style:normal'>vi 
+      (``visual editor'').</i> vi - это не самый простой в использовании редактор. 
+      </b></span></p>
+    <span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><b><o:p></o:p></b></span></div>
+  <h1 align=left style='text-align:left;text-indent:36.0pt'><font size="+2"><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-weight:normal'><b><font size="4">Концепции<o:p></o:p><o:p></o:p></font></b><font size="4"><o:p></o:p><o:p></o:p><o:p></o:p><o:p></o:p><o:p></o:p><o:p></o:p><o:p></o:p><o:p></o:p><o:p></o:p></font><font size="-2"><o:p></o:p></font><font size="+3"><o:p></o:p></font><o:p></o:p></span></font><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-weight:normal'><o:p></o:p></span></h1>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>При использовании vi в любое 
+    время вы можете находиться в одном из трех режимов работы. Эти режимы известны 
+    как <i style='mso-bidi-font-style:normal'><u>командный режим, режим вставки 
+    и режим последней строки.<o:p></o:p></u></i></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Когда вы начинаете работать 
+    с vi - вы в <i style='mso-bidi-font-style:normal'><u>командном режиме</u></i><u>.</u> 
+    Этот режим позволяет использовать определенные команды для редактирования 
+    файлов или перехода в другие режимы. Например, напечатав <i style='mso-bidi-font-style:
+normal'>``x'' при нахождении в командном режиме, удаляете символ, находящийся 
+    перед курсором.</i> Стрелки передвигают курсор по редактируемому файлу. Большинство 
+    команд, используемых в командном режиме, состоит из одного или двух символов.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><i
+style='mso-bidi-font-style:normal'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>Вставку или редактирование текста вы осуществляете в режиме вставки</span></i><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>. При использовании vi вы, 
+    возможно, большую часть времени находитесь именно в этом режиме. Вы переходите 
+    <i
+style='mso-bidi-font-style:normal'>в режим вставки с помощью команды ``i'' (``insert'' 
+    - вставка) из командного режима.</i> В режиме вставки вы вставляете текст 
+    в документ на место, указываемое курсором. <i style='mso-bidi-font-style:normal'>Для 
+    завершения режима вставки и возврата в командный режим следует нажать esc.<o:p></o:p></i></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><i
+style='mso-bidi-font-style:normal'><u><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>Режим последней строки</span></u></i><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'> - <i style='mso-bidi-font-style:normal'>это специальный 
+    режим, используемый для расширения возможностей командного режима</i>. При 
+    вводе таких команд они появляются в последней строке экрана. Например, <i
+style='mso-bidi-font-style:normal'>если вы напечатаете ``:'' в командном режиме, 
+    вы перейдете в режим последней строки</i> и сможете использовать <i
+style='mso-bidi-font-style:normal'>такие команды, как ``wq'' (записать (write) 
+    файл и выйти (quit) из vi), или ``q!'' (выйти из vi без сохранения изменений).</i> 
+    Режим последней строки в общем случае используется для команд vi, которые 
+    длиннее одного символа. <i style='mso-bidi-font-style:normal'>В режиме последней 
+    строки вы вводите однострочные команды и нажимаете enter для их выполнения</i>.<o:p></o:p></span></b></p>
+  <h6>&nbsp;</h6>
+  <h6><b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><font size="4">Начало 
+    работы<span
+style="mso-spacerun: yes">  </span>с<span style="mso-spacerun: yes">  </span>vi<o:p></o:p></font><o:p></o:p></span></b></h6>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Лучший способ освоить эту концепцию, 
+    это вызвать vi и отредактировать файл. <o:p></o:p></span></b></p>
+  <p class=MsoHeading7><b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><span
+style="mso-spacerun: yes">          </span>Вызов</span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'> vi 
+    :<span style="mso-spacerun: yes">       </span>vi &lt;filename&gt;<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>где &lt;filename&gt; - имя 
+    редактируемого файла.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style="mso-spacerun: yes">     </span><span
+style='mso-tab-count:1'>       </span>Столбец символов ``~'' говорит о том, что 
+    вы стоите на конце файла.<o:p></o:p></span></b></p>
+  <h2><b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-weight:normal'>Вставка 
+    текста<o:p></o:p></span></b></h2>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Вы находитесь в командном режиме; 
+    для того, чтобы вставлять текст в файл, нажмите i (что переведет вас в режим 
+    вставки) и начинайте печатать.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style="mso-spacerun: yes"> </span><span
+style='mso-tab-count:1'>           </span>При вставке текста вы можете напечатать 
+    столько строк, сколько пожелаете (нажимая return после каждой строки<i
+style='mso-bidi-font-style:normal'>), и можете корректировать ошибки используя 
+    клавишу возврата (backspace).<o:p></o:p></i></span></b></p>
+  <p class=MsoBodyText2 style='text-indent:36.0pt'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt;mso-ansi-language:RU'>Для завершения режима вставки 
+    и возврата в командный режим нажмите </span><span lang=EN-AU style='font-size:
+12.0pt;mso-bidi-font-size:10.0pt'>esc</span><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt;mso-ansi-language:RU'>.<o:p></o:p></span></b></p>
+  <p class=MsoBodyTextIndent2><b><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>В командном режиме вы можете использовать клавиши со стрелками для перемещения 
+    по файлу. <o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style='mso-tab-count:1'>            </span>Есть 
+    несколько способов вставки текста, отличных от использования команды i. Например, 
+    <i style='mso-bidi-font-style:normal'>команда a вставляет в текст, начиная 
+    после текущего положения курсора, вместо текущей позиции курсора</i>.<o:p></o:p></span></b></p>
+  <p class=MsoBodyText><b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;
+mso-ansi-language:RU'><span style="mso-spacerun: yes">     </span><span
+style='mso-tab-count:1'>       </span>Нажмите a, для начала режима вставки, напечатайте 
+    ``wo'', а затем нажмите esc для возврата в командный режим.<o:p></o:p></span></b></p>
+  <p class=MsoBodyTextIndent3><b><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>Для того, чтобы начать вставку текста в строку ниже текущей, используйте 
+    команду ``о''<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Но помните, что в любое время 
+    вы находитесь либо в командном режиме (где команды, такие как i, a или o могут 
+    применяться) или в режиме вставки (где вы вставляете текст, а затем с помощью 
+    esc возвращаетесь в командный режим) или в режим последней строки (в котором 
+    вы расширяете расширяемые команды, как это обсуждается ниже).<o:p></o:p></span></b></p>
+  <h3 align=left style='text-align:left;text-indent:36.0pt'>&nbsp;</h3>
+  <h3 align=left style='text-align:left;text-indent:36.0pt'><font size="4" face="Times New Roman, Times, serif"><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-weight:
+normal'><font face="Courier New, Courier, mono"><b><font face="Arial, Helvetica, sans-serif">Удаление 
+    текста<o:p></o:p><o:p></o:p><o:p></o:p></font></b></font></span></i></font><font face="Arial, Helvetica, sans-serif"><b><font size="4"><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-weight:
+normal'><o:p></o:p><o:p></o:p></span></i></font><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-weight:
+normal'><o:p></o:p><o:p></o:p></span></i></b><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-weight:
+normal'><o:p></o:p></span></i></font><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-weight:
+normal'><o:p></o:p></span></i></h3>
+  <p class=MsoBodyTextIndent2><b><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>В командном режиме команда &quot;x&quot; удаляет символ перед курсором. 
+    <o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style="mso-spacerun: yes">      </span><span
+style='mso-tab-count:1'>      </span>Теперь нажмите a, вставьте некоторый текст, 
+    а затем нажмите esc:<o:p></o:p></span></b></p>
+  <p class=MsoBodyText3><b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;
+mso-ansi-language:RU'><span style="mso-spacerun: yes">      </span></span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU;
+font-weight:normal;font-style:normal'><span style='mso-tab-count:1'>      </span>Вы 
+    можете удалять целые строки, набирая команду </span><span lang=EN-AU
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-weight:normal;
+font-style:normal'>dd</span><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-ansi-language:RU;font-weight:normal;font-style:normal'> (т.е. нажимая 
+    </span><span lang=EN-AU style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;font-weight:normal;font-style:normal'>d</span><span style='font-size:
+12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU;font-weight:normal;
+font-style:normal'> дважды).<o:p></o:p></span></b></p>
+  <p class=MsoBodyTextIndent><b><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-ansi-language:RU;font-weight:normal;font-style:normal'>Чтобы удалить 
+    слово, на котором находится курсор, используйте команду </span><span
+lang=EN-AU style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-weight:normal;
+font-style:normal'>dw</span><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-ansi-language:RU;font-weight:normal;font-style:normal'>.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style="mso-spacerun: yes"><font face="Arial, Helvetica, sans-serif"><i><font size="4">      
+    </font></i></font></span><font size="4"><i><font face="Arial, Helvetica, sans-serif"><span
+style='mso-tab-count:1'>      </span>Изменение текста<o:p></o:p></font><o:p></o:p></i></font><i><o:p></o:p></i><o:p></o:p></span></b></p>
+  <p class=MsoBodyTextIndent2><b><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>Вы можете заменить фрагменты текста, используя команду R. Поместите курсор 
+    на первую букву слова ``party'', нажмите R и напечатайте слово ``hungry''.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style="mso-spacerun: yes">      </span><span
+style='mso-tab-count:1'>      </span>Использование R для редактирования текста 
+    очень походит на на команды i и a, но R заменяет прежний текст вместо вставки 
+    в него<i style='mso-bidi-font-style:normal'>. Команда r заменяет один символ, 
+    отмеченный курсором. </i><o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style="mso-spacerun: yes">   </span><span
+style='mso-tab-count:1'>         </span><i style='mso-bidi-font-style:normal'>Команда 
+    ``&amp;tilde;</i>'' изменяет размер буквы, отмеченной курсором: большую делает 
+    маленькой и наоборот.<i style='mso-bidi-font-style:normal'> <o:p></o:p></i></span></b></p>
+  <p class=MsoHeading8>&nbsp;</p>
+  <p class=MsoHeading8><b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><span
+style='mso-tab-count:1'>          <font face="Arial, Helvetica, sans-serif" size="4"><i>  
+    </i></font></span><font face="Arial, Helvetica, sans-serif" size="4"><i>Команды 
+    перемещения<o:p></o:p></i><o:p></o:p></font><font face="Arial, Helvetica, sans-serif"><o:p></o:p></font><o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Вы уже знаете, как использовать 
+    стрелки <i style='mso-bidi-font-style:normal'>для перемещений по документу. 
+    Вы также можете использовать команды h, j, k, и l для перемещения курсора 
+    влево, вниз, вверх и вправо соответственно.</i> Это удобно, если (по каким-то 
+    причинам) ваши клавиши со стрелками не работают как надо.<o:p></o:p></span></b></p>
+  <p class=MsoBodyTextIndent3><b><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>Команда w перемещает курсор на начало следующего слова; b - перемещает 
+    на начало предыдущего слова.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><i
+style='mso-bidi-font-style:normal'><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>Команда 0 (это ноль) передвигает курсор на начало текущей строки, а команда 
+    $ перемещает на конец строки.<o:p></o:p></span></i></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>При редактировании больших 
+    файлов вы хотите перемещаться вперед и назад сразу на размер экрана. <i
+style='mso-bidi-font-style:normal'>Нажатием ctrl-F курсор перемещается на экран 
+    вперед, с помощью ctrl-B - на экран назад.<o:p></o:p></i></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Для того, чтобы переместить 
+    курсор в конец файла, напечатайте G. Можно переместиться также на любую строку, 
+    напечатав команду 10G вы переместите курсор на десятую строку файла. Для того, 
+    чтобы встать на начало (на первую строку), используйте 1G<i style='mso-bidi-font-style:normal'>.<o:p></o:p></i></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Вы можете сочетать команды 
+    перемещения с другими командами, такими как удаление. Например, <i
+style='mso-bidi-font-style:normal'>команда d$</i> удалить от местоположения курсора 
+    до конца строки; dG удалит все от курсора до конца файла и т.д.<o:p></o:p></span></b></p>
+  <h4 style='text-indent:36.0pt'>&nbsp;</h4>
+  <h4 style='text-indent:36.0pt'><b><i style='mso-bidi-font-style:normal'><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU;
+font-weight:normal'><font face="Arial, Helvetica, sans-serif" size="4">Сохранение 
+    файлов и выход из</font></span></i></b><i style='mso-bidi-font-style:normal'><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU;
+font-weight:normal'><font face="Arial, Helvetica, sans-serif" size="4"> </font></span><font face="Arial, Helvetica, sans-serif" size="4"><span lang=EN-AU style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt;font-weight:normal'><b>vi</b></span></font></i><b><font face="Arial, Helvetica, sans-serif" size="4"><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+RU;font-weight:normal'><o:p></o:p><o:p></o:p></span></i></font><font face="Arial, Helvetica, sans-serif"><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+RU;font-weight:normal'><o:p></o:p></span></i></font><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+RU;font-weight:normal'><o:p></o:p></span></i></b><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+RU;font-weight:normal'><o:p></o:p></span></i></h4>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Для выхода из vi без внесения 
+    изменений в ранее существовавший файл используйте <i style='mso-bidi-font-style:
+normal'>команду :q!.<o:p></o:p></i></span></b></p>
+  <p class=MsoBodyTextIndent2><b><span style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>Когда вы напечатаете ``:'', курсор переместится на последнюю строку экрана, 
+    поскольку вы перейдете в режим последней строки.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style="mso-spacerun: yes">      </span><span
+style='mso-tab-count:1'>      </span>В режиме последней строки могут выполняться 
+    некоторые расширенные команды. Одна из них - q!, которая позволяет выйти из 
+    vi без записи. Команда :wq сохраняет (записывает) файл, а затем выходит из 
+    vi. Команда ZZ (в режиме команд, без `:'') эквивалентна :wq. Помните, что 
+    вы должны нажать enter после набора команды в режиме последней строки. Если 
+    хотите <i style='mso-bidi-font-style:normal'>записать файл без выхода из /vi, 
+    используйте просто :w.<o:p></o:p></i></span></b></p>
+  <h5>&nbsp;</h5>
+  <h5><b><i style='mso-bidi-font-style:normal'><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt;mso-ansi-language:RU;font-weight:normal'><font face="Arial, Helvetica, sans-serif" size="4">Редактирование 
+    еще одного файла<o:p></o:p></font><font size="4"><o:p></o:p></font><o:p></o:p></span></i></b></h5>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Для того, чтобы <i
+style='mso-bidi-font-style:normal'>отредактировать другой файл, используйте команду 
+    :e.</i> <o:p></o:p></span></b></p>
+  <h4 style='text-indent:36.0pt'>&nbsp;</h4>
+  <h4 style='text-indent:36.0pt'><b><i style='mso-bidi-font-style:normal'><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU;
+font-weight:normal'><font face="Arial, Helvetica, sans-serif" size="4">Включение 
+    других файлов<o:p></o:p></font><font size="4"><o:p></o:p></font><o:p></o:p></span></i></b></h4>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Если вы используете <i
+style='mso-bidi-font-style:normal'>команду :r, вы можете включить содержимое другого 
+    файла в текущий файл. </i>Например, команда<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><span
+style="mso-spacerun: yes">         </span>:r foo.txt<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>вставит содержимое файла foo.txt в данное место текста.<o:p></o:p></span></b></p>
+  <h4 style='text-indent:36.0pt'>&nbsp;</h4>
+  <h4 style='text-indent:36.0pt'><font size="4" face="Arial, Helvetica, sans-serif"><i style='mso-bidi-font-style:normal'><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU;
+font-weight:normal'><b>Выполнение команд </b></span></i><i style='mso-bidi-font-style:
+normal'><span lang=EN-AU style='font-size:12.0pt;mso-bidi-font-size:10.0pt;
+font-weight:normal'><b>Shell</b></span></i><i style='mso-bidi-font-style:normal'><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU;
+font-weight:normal'><o:p></o:p></span></i></font><font face="Arial, Helvetica, sans-serif"><i style='mso-bidi-font-style:normal'><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU;
+font-weight:normal'><o:p></o:p></span></i></font><i style='mso-bidi-font-style:normal'><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU;
+font-weight:normal'><o:p></o:p></span></i></h4>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Вы можете также выполнять команды 
+    прямо из vi. Команда :r! работает как :r, но вместо чтения файла она вставляет 
+    выход данной команды в буфер<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><span
+style="mso-spacerun: yes">         </span>:r!<span style="mso-spacerun: yes">  
+    </span>ls -F<o:p></o:p></span></i></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>вы получите в результате<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style="mso-spacerun: yes">      </span>Вы можете 
+    выполнить команду a, находясь в редакторе vi и вернуться в редактор после 
+    ее завершения Напрмиер, команда<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><span
+style="mso-spacerun: yes">         </span>:!<span style="mso-spacerun: yes">  
+    </span>ls -F<o:p></o:p></span></i></b></p>
+  <p class=MsoBodyText><b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;
+mso-ansi-language:RU'>будет выполнена команда ls -F, а результат выдан на экран, 
+    а не вставлен в редактируемый файл. Если вы используете команду<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><i style='mso-bidi-font-style:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><span
+style="mso-spacerun: yes">         </span>:shell<o:p></o:p></span></i></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>vi запустит shell, который позволит временно &quot;отложить&quot; 
+    vi и выполнить команды. После <i style='mso-bidi-font-style:
+normal'>выхода из shell (используя команду exit)</i> вы вернетесь в vi.</span></b></p>
+
+</div>
+
+</body>
+
+</html>

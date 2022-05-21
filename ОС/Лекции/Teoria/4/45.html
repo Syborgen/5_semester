@@ -1,0 +1,49 @@
+<html>
+<head>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<title>Прекращение выполнения процессов: команда kill</title>
+
+</head>
+<body lang=RU   BACKGROUND="FON.gif"  class="Normal">
+<h2 align="center"><b>Прекращение выполнения процессов: команда <span lang=EN-US>kill</span></b><span lang=UK></span></h2>
+<p style='text-align:justify;'><span lang=UK
+style='font-size:12.0pt;'><b>Команду </b></span><b><span lang=EN-US style='font-size:12.0pt;'>kill</span><span lang=EN-US style='font-size:12.0pt;
+'> </span><span style='font-size:12.0pt;'>чаще всего используют для прекращения 
+  выполнения процесса. Эта команда может послать в процесс любой сигнал, но по 
+  умолчанию посылается сигнал </span><span
+lang=EN-US style='font-size:12.0pt;'>TERM</span><span style='font-size:12.0pt;'>, 
+  сигнал программного завершения. Команду </span><span lang=EN-US
+style='font-size:12.0pt;'>kill </span><span
+style='font-size:12.0pt;'>могут использовать как обычные пользователи (для своих 
+  собственных процессов), так и суперпользователь(для любого процесса). Она имеет 
+  следующий синтаксис:</span></b></p>
+<p style='text-align:justify;'><b><span
+lang=EN-US style='font-size:12.0pt;'>kill [-</span><span style='font-size:12.0pt;'>сигнал</span><span
+lang=EN-US style='font-size:12.0pt;'>] pid,</span></b></p>
+<p style='text-align:justify;'><b><span
+style='font-size:12.0pt;'>где сигнал – номер или символическое имя посылаемого 
+  сигнала, а </span><span lang=EN-US
+style='font-size:12.0pt;'>pid</span><span
+style='font-size:12.0pt;'> – идентификационный номер процесса-адресата. Команда 
+  </span><span lang=EN-US style='font-size:12.0pt;
+'>kill</span><span lang=EN-US
+style='font-size:12.0pt;'> </span><span
+style='font-size:12.0pt;'>без номера сигнала «не гарантирует», что процесс умрет, 
+  потому что сигнал </span><span lang=EN-US
+style='font-size:12.0pt;'>TERM </span><span
+style='font-size:12.0pt;'>можно перехватить, блокировать и игнорировать. Команда 
+  </span><span lang=EN-US style='font-size:
+12.0pt;'>kill</span><span
+style='font-size:12.0pt;'> –9 </span><span lang=EN-US
+style='font-size:12.0pt;'>pid</span><span
+style='font-size:12.0pt;'> «гарантирует», что процесс умрет, потому что сигнал 
+  9, </span><span lang=EN-US style='font-size:12.0pt;
+'>KILL</span><span
+style='font-size:12.0pt;'>, другими процессами не перехватывается.</span></b></p>
+<p style='text-align:justify;'><b><span
+style='font-size:12.0pt;'>За более подробной информацией по данной команде обращаться 
+  к страницам руководства</span></b></p>
+<hr>
+</body>
+</html>

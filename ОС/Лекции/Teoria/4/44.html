@@ -1,0 +1,79 @@
+<html>
+<head>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<title>Изменение приоритета выполнения: команды nice и renice</title>
+
+</head>
+<body lang=RU  BACKGROUND="FON.gif" class="Normal">
+<p style='text-align:justify;' align="center"><b><span
+style='font-size:12.0pt;'><font size="4">Изменение приоритета выполнения: команды 
+  </font></span><font size="4"><span lang=EN-US style='font-size:12.0pt;
+'><font size="5">nice</font></span><font size="5"><span
+lang=EN-US style='font-size:12.0pt;'> </span><span
+style='font-size:12.0pt;'>и </span><span
+lang=EN-US style='font-size:12.0pt;'>renice</span><span style='font-size:12.0pt;'>.</span></font></font></b></p>
+<p style='text-align:justify'><span>      <b>   </b></span></p>
+<p style='text-align:justify'><span><b>   </b></span><b><span
+lang=EN-US style='font-size:12.0pt;'>nice</span><span style='font-size:12.0pt;'> 
+  - выполнение команды с пониженным приоритетом</span></b></p>
+<p style='text-align:justify'><span style='font-size:12.0pt;
+'><b>СИНТАКСИС </b></span></p>
+<p style='text-align:justify;'><span
+lang=EN-US style='font-size:12.0pt;'>nice</span><span>  </span>[-коэффициент_понижения] 
+  команда [аргумент ...]</p>
+<p style='text-align:justify'><span style='font-size:12.0pt;
+'><b>ОПИСАНИЕ </b></span></p>
+<p style='text-align:justify'><span>            </span>Команда <span lang=EN-US style='font-size:12.0pt;'>nice</span> 
+  выполняет команду с  пониженным  приоритетом. Коэффициент_понижения задается  
+  в  диапазоне  1-19            (по умолчанию равен 10).</p>
+<p style='text-align:justify'><span>            </span>Суперпользователь может 
+  выполнять команды с  повышенным            приоритетом, для этого нужно указать 
+  отрицательный  коэффициент_понижения, например --10.</p>
+<p style='text-align:justify'><span style='font-size:12.0pt;
+'><b>СМ. ТАКЖЕ </b></span></p>
+<p style='text-align:justify'><span>            </span><span
+lang=EN-US style='font-size:12.0pt;'>nohup</span><span style='font-size:12.0pt;'>(1).</span></p>
+<p style='text-align:justify'><span>            </span><span
+lang=EN-US style='font-size:12.0pt;'>nice</span><span style='font-size:12.0pt;'>(2) 
+  в Справочнике программиста.</span></p>
+<p style='text-align:justify'><span style='font-size:12.0pt;
+'><b>КОД ЗАВЕРШЕНИЯ </b></span></p>
+<p style='text-align:justify'><span>            </span>Команда <span lang=EN-US style='font-size:12.0pt;'>nice</span> 
+  возвращает код завершения подчиненной  команды.</p>
+<p style='text-align:justify'><span lang=EN-US
+style='font-size:12.0pt;'>NICE</span>(2)                                                 
+  <span lang=EN-US style='font-size:12.0pt;'>NICE</span><span style='font-size:12.0pt;'>(2)</span></p>
+<p style='text-align:justify;'><span
+lang=EN-US style='font-size:12.0pt;'><b>nice</b></span><b><span style='font-size:12.0pt;'> 
+  - изменение приоритета процесса</span></b></p>
+<p style='text-align:justify'><span lang=EN-US
+style='font-size:12.0pt;'><b>СИНТАКСИС </b></span></p>
+<p style='text-align:justify'><span>        </span>    int nice (incr)</p>
+<p style='text-align:justify'><span>        </span>    int<span
+lang=EN-US style='font-size:12.0pt;'> </span><span
+lang=EN-US style='font-size:12.0pt;'>incr</span><span style='font-size:12.0pt;'>;</span></p>
+<p style='text-align:justify'><span style='font-size:12.0pt;
+'><b>ОПИСАНИЕ </b></span></p>
+<p style='text-align:justify'><span>        </span>Системный вызов <span lang=EN-US style='font-size:12.0pt;
+'>nice</span> увеличивает поправку к  приоритету вызывающего процесса на величину 
+  <span
+lang=EN-US style='font-size:12.0pt;'>incr</span>. Поправка к приоритету - неотрицательное 
+  число; чем оно больше, тем ниже приоритет процесса в смысле использования  процессора.</p>
+<p style='text-align:justify'><span>        </span>Максимальное (39) и минимальное 
+  (0) значения поправки к приоритету  ограничиваются  системой.  (Подразумеваемое 
+  значение поправки равно 20). Эти значения используются, когда делается попытка 
+  выйти за соответствующую  границу.</p>
+<p style='text-align:justify'><span>        </span>[<span
+lang=EN-US style='font-size:12.0pt;'>EPERM</span>]     Системный вызов <span lang=EN-US
+style='font-size:12.0pt;'>nice</span> завершается неудачей и не изменяет поправку 
+  к приоритету, если аргумент  <span lang=EN-US style='font-size:12.0pt;'>incr</span><span>  
+  </span>отрицателен  или больше 39, а действующий идентификатор пользователя  
+  вызывающего  процесса не является идентифика-                    тором суперпользователя.</p>
+<p style='text-align:justify;'>В случае  успешного  завершения  системный  вызов  
+  <span lang=EN-US style='font-size:12.0pt;'>nice</span> возвращает новое значение 
+  поправки к  приоритету  минус 20. В случае ошибки возвращается -1, а переменной 
+  <span lang=EN-US style='font-size:
+12.0pt;'>errno</span><span>  </span>присваивается код ошибки.</p>
+</body>
+</html>

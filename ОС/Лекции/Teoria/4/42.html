@@ -1,0 +1,148 @@
+<html>
+<head>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<title>Текущий контроль процессов: команда ps</title>
+</head>
+<body lang=RU BACKGROUND="FON.gif" class="Normal">
+<p style='text-align:justify;' align="right"><b><span
+style='font-size:12.0pt;'><font size="4"> Текущий контроль процессов: команда 
+  </font></span></b><font size="4"><span lang=EN-US style='font-size:12.0pt;
+'><font size="5">ps</font></span></font></p>
+<p style='text-align:justify'><b><font size="3">            ps - выдача информации 
+  о состоянии процессов</font></b></p>
+<p style='text-align:justify'><b><font size="3"><span style='font-size:12.0pt;
+'>СИНТАКСИС </span></font></b></p>
+<p style='text-align:justify'><b><font size="3">        ps  [-e] [-d] [-a] [-f] 
+  [-l] [-n файл_с_системой] [-t список_терминалов]</font></b></p>
+<p style='text-align:justify'><b><font size="3">            [-p список_идентификаторов_процессов]</font></b></p>
+<p style='text-align:justify'><b><font size="3">            [-u список_идентификаторов_пользователей]</font></b></p>
+<p style='text-align:justify'><b><font size="3">            [-g список_идентификаторов_лидеров_групп]</font></b></p>
+<p style='text-align:justify'><b><font size="3"><span style='font-size:12.0pt;
+'>ОПИСАНИЕ </span></font></b></p>
+<p style='text-align:justify'><b><font size="3">            Команда ps выдает 
+  информацию об активных процессах.  По умолчанию информация дается только о процессах, 
+  ассоци            ированных с данным терминалом. Выводятся  идентификатор процесса, 
+  идентификатор терминала, истраченное к данному моменту время ЦП и имя команды. 
+  Если нужна иная  информация, следует пользоваться опциями.</font></b></p>
+<p style='text-align:justify'><b><font size="3">            Некоторые опции имеют 
+  один аргумент или список аргументов. Аргументы в списке могут быть либо  отделены  
+  друг от друга запятыми, либо все вместе заключены в  двойные кавычки и отделены 
+  пробелами или запятыми. Аргументы  в списке_процессов и в списке_групп должны 
+  быть числами.</font></b></p>
+<p style='text-align:justify'><b><font size="3">            Командой ps обрабатываются 
+  следующие опции:</font></b></p>
+<p style='text-align:justify'><b><font size="3">            -e   Вывести информацию 
+  обо всех процессах.</font></b></p>
+<p style='text-align:justify'><b><font size="3">            -d   Вывести информацию 
+  обо всех процессах, кроме лидеров групп.</font></b></p>
+<p style='text-align:justify'><b><font size="3">            -a   Вывести информацию 
+  обо всех наиболее часто  запрашиваемых процессах, то есть  обо  всех  процессах, 
+  кроме лидеров групп и процессов, не  ассоциированных с терминалом.</font></b></p>
+<p style='text-align:justify'><b><font size="3">            -f   Генерировать 
+  полный листинг (см. ниже  раз яснение  смысла колонок).</font></b></p>
+<p style='text-align:justify'><b><font size="3">            -l   Генерировать 
+  листинг в длинном формате (см. ниже).</font></b></p>
+<p style='text-align:justify'><b><font size="3">            -n файл_с_системой 
+  </font></b></p>
+<p style='text-align:justify'><b><font size="3">                 Считать, что  
+  операционная  система  загружена  из файла_с_системой, а не из файла /unix.</font></b></p>
+<p style='text-align:justify'><b><font size="3">            -t список_терминалов 
+  </font></b></p>
+<p style='text-align:justify'><b><font size="3">                 Выдавать информацию 
+  только о процессах, ассоциированных с терминалами из заданного  списка_терминалов. 
+  Терминал -  это  либо  имя  файла-устройства, например ttyномер или console, 
+  либо просто  номер, если имя файла начинается с tty.</font></b></p>
+<p style='text-align:justify'><b><font size="3">            -p список_идентификаторов_процессов 
+  </font></b></p>
+<p style='text-align:justify'><b><font size="3">                 Выдавать информацию 
+  только об указанных процессах.</font></b></p>
+<p style='text-align:justify'><b><font size="3">            -u список_идентификаторов_пользователей 
+  </font></b></p>
+<p style='text-align:justify'><b><font size="3">                 Выдавать информацию 
+  только о процессах с заданными идентификаторами или входными именами  пользователей. 
+  Идентификатор пользователя выводится в числовом виде, а при наличии опции -f 
+  - в символьном.</font></b></p>
+<p style='text-align:justify'><b><font size="3">            -g список_идентификаторов_лидеров_групп 
+   </font></b></p>
+<p style='text-align:justify;'><b><font size="3">Выводить информацию только о 
+  процессах, для  которых указаны идентификаторы  лидеров  групп.  Лидер  группы 
+  - это процесс, номер которого идентичен его      идентификатору группы. Shell, 
+  запускаемый при входе в систему, является стандартным примером лидера  группы.</font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+style='font-size:12.0pt;'>Расширенный просмотр запущенных процессов – команда 
+  </span><span lang=EN-US style='font-size:12.0pt;
+'>ps</span><span
+style='font-size:12.0pt;'> –</span><span lang=EN-US
+style='font-size:12.0pt;'>aux</span><span
+style='font-size:12.0pt;'>.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+style='font-size:12.0pt;'>Пояснения к выходной информации команды </span><span lang=EN-US style='font-size:12.0pt;'>ps</span><span style='font-size:12.0pt;
+'> –</span><span lang=EN-US style='font-size:12.0pt;
+'>aux</span><span
+style='font-size:12.0pt;'>:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+lang=EN-US style='font-size:12.0pt;'>USER</span><span style='font-size:12.0pt;'> 
+  – имя владельца процесса.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+lang=EN-US style='font-size:12.0pt;'>PID</span><span style='font-size:12.0pt;'> 
+  – идентификатор процесса.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span lang=UK
+style='font-size:12.0pt;'>%</span><span
+lang=EN-US style='font-size:12.0pt;'>CPU </span><span style='font-size:12.0pt;'>– 
+  доля времени центрального процессора (в %), выделенная данному процессу.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+style='font-size:12.0pt;'>%</span><span lang=EN-US
+style='font-size:12.0pt;'>MEM</span><span
+style='font-size:12.0pt;'> – часть реальной памяти, используемая данным процессом.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+lang=EN-US style='font-size:12.0pt;'>VSZ</span><span style='font-size:12.0pt;'> 
+  – виртуальный размер процесса в килобайтах.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+lang=EN-US style='font-size:12.0pt;'>RSS</span><span style='font-size:12.0pt;'> 
+  – Размер рзидентного набора (количество 1К-страниц в памяти).</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+lang=EN-US style='font-size:12.0pt;'>TTY</span><span style='font-size:12.0pt;'> 
+  – идентификатор управляющего терминала.</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+lang=EN-US style='font-size:12.0pt;'>STAT</span><span style='font-size:12.0pt;'> 
+  – текущий статус процесса:</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3">            <span lang=EN-US style='font-size:12.0pt;
+'>R</span><span
+style='font-size:12.0pt;'> – выполнимый;</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3">            <span lang=EN-US style='font-size:12.0pt;
+'>D</span><span
+style='font-size:12.0pt;'> – кратковременное ожидание;</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3">            <span lang=EN-US style='font-size:12.0pt;
+'>S</span><span
+style='font-size:12.0pt;'> – ожидающий &gt; 20 </span><span
+lang=EN-US style='font-size:12.0pt;'>c</span><span style='font-size:12.0pt;'>;</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3">            <span lang=EN-US style='font-size:12.0pt;
+'>I</span><span
+style='font-size:12.0pt;'> – ожидающий &lt;20 </span><span
+lang=EN-US style='font-size:12.0pt;'>c</span><span style='font-size:12.0pt;'>;</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3">            <span lang=EN-US style='font-size:12.0pt;
+'>Z</span><span
+style='font-size:12.0pt;'> – зомби;</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3">            <span lang=EN-US style='font-size:12.0pt;
+'>T</span><span
+style='font-size:12.0pt;'> – остановленный;</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3">            <span lang=EN-US style='font-size:12.0pt;
+'>L</span><span
+style='font-size:12.0pt;'> – блокирован;</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3">            <span lang=EN-US style='font-size:12.0pt;
+'>S</span> –  процесс лидер сеанса.</font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+lang=EN-US style='font-size:12.0pt;'>START</span><span style='font-size:12.0pt;'> 
+  – время запуска процесса;</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+lang=EN-US style='font-size:12.0pt;'>TIME</span><span style='font-size:12.0pt;'> 
+  – Время центрального процессора, потребленное процессом;</span></font></b></p>
+<p style='text-align:justify;'><b><font size="3"><span
+lang=EN-US style='font-size:12.0pt;'>COMMAND</span><span style='font-size:12.0pt;'> 
+  – имя и аргументы команды.</span></font></b></p>
+<p style='text-align:justify'><b><font size="3">            За более подробной 
+  информацией по данной команде обращаться к страницам руководства.</font></b></p>
+ </div>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<link rel=stylesheet href="../../CSS/index.css" type="text/css">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./telnet.files/filelist.xml">
+<title>Использование telnet для доступа к удаленным компьютерам</title>
+
+</head>
+
+<body lang=RU background=FON.gif style='tab-interval:36.0pt'>
+
+<div class=Section1> 
+  <p class=MsoNormal style='text-indent:36.0pt' align="center"><b style='mso-bidi-font-weight:
+normal'><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><font size="4">Использование 
+    telnet для доступа к удаленным компьютерам<o:p></o:p></font><o:p></o:p></span></b></p>
+
+  <p class=MsoNormal><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>
+    <![if !supportEmptyParas]>
+    &nbsp;
+    <![endif]>
+    <o:p></o:p></span></p>
+  <p class=MsoNormal style='text-indent:36.0pt'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>Telnet является основным средством Linux для подключения 
+    к удаленным компьютерам. Программа </span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>t</span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>elnet создает терминальную 
+    сессию на удаленном компьютере, позволяя выполнять команды так, как будто 
+    вы работаете на компьютере локально.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-indent:36.0pt'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>Для удаленного подключения к компьютеру необходимо 
+    знать имя пользователя и пароль на удаленной машине. <o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-indent:36.0pt'><b><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>t</span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>elnet также позволяет подключаться 
+    к компьютеру удаленно, введя правильное имя и пароль. Потльзователь может 
+    проверять свой почтовый ящик, редактировать и запускать файлы, доступ к которым 
+    разрешен. Работа происходит так, как будто пользователь работает локально.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-indent:36.0pt'><b><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>t</span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>elnet эмулирует только простые 
+    терминалы. Работать, например, в </span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>X</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'>Windows</span><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'> </span><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>по средством 
+    </span><span lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt;mso-ansi-language:EN-US'>t</span><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>elnet нельзя.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-indent:36.0pt'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>Основные команды </span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>t</span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>elnet:<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-indent:36.0pt'><b><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>telnet</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>[имя удаленного компьютера]<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-indent:36.0pt'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>Н-р: </span><span lang=EN-US style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>telnet</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>194.44.183.180 – (Сервер кафедры 
+    ПМиИ)<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-indent:36.0pt'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>Потом необходимо ввести </span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>login</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt'> </span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>и пароль.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-indent:36.0pt'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>После работы необходимо закрыть сессию.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><i style='mso-bidi-font-style:normal'>Вход в систему<o:p></o:p></i></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><i style='mso-bidi-font-style:normal'><o:p></o:p></i></span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'> 
+    <![if !supportEmptyParas]>
+    &nbsp; 
+    <![endif]>
+    <o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>При входе вы увидите на экране 
+    подсказку, например, такого вида:<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style="mso-spacerun: yes">         </span></span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'>login:student<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'><span
+style="mso-spacerun: yes">         </span>Password: </span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Студент</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'> (</span><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>лат</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'>. </span><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>буквами</span><span
+lang=EN-US style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:
+EN-US'>)<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Теперь введите ваш пароль (password). 
+    При вводе пароль не будет отображаться на экране, так что набирайте внимательнее. 
+    Если вы неправильно набрали пароль, то увидите на экране сообщение<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'><span style="mso-spacerun: yes">         </span>Login 
+    incorrect<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt'>и вам следует попытаться еще раз.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Когда вы наконец правильно 
+    введете имя пользователя и пароль, вы официально будете допущены в систему<span
+style="mso-spacerun: yes">  </span>появится:<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>[student@pmi 
+    student]$<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify'><b><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'>
+    <![if !supportEmptyParas]>
+    &nbsp;
+    <![endif]>
+    <o:p></o:p></span></b></p>
+  <h2><b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Виртуальные 
+    консоли <o:p></o:p></span></b></h2>
+  <h2><b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><o:p></o:p></span></b></h2>
+  <h2><b><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt'><o:p></o:p></span><span lang=EN-US
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:EN-US'> 
+    <![if !supportEmptyParas]>
+    &nbsp; 
+    <![endif]>
+    <o:p></o:p></span></b></h2>
+  <p class=MsoBodyText style='text-indent:36.0pt'><b><span style='font-size:12.0pt;
+mso-bidi-font-size:10.0pt;mso-ansi-language:RU'>Системная консоль - это монитор 
+    и клавиатура, связанные непосредственно с системой. (Поскольку </span><span
+lang=EN-AU style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>LINUX</span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU'> многопользовательская 
+    система, вы можете иметь дополнительные терминалы, связанные через последовательные 
+    порты с вашей системой, но они не будут консолями). </span><span lang=EN-AU style='font-size:12.0pt;mso-bidi-font-size:
+10.0pt'>Linux</span><span style='font-size:12.0pt;mso-bidi-font-size:10.0pt;
+mso-ansi-language:RU'>, как и некоторые другие версии </span><span lang=EN-AU
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>UNIX</span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU'>, обеспечивает 
+    доступ к виртуальным консолям (или </span><span lang=EN-AU
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>VC</span><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt;mso-ansi-language:RU'>), которые 
+    позволяют войти в систему под несколькими именами в одно время.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Для демонстрации этого войдите 
+    в систему (как было показано ранее). Теперь нажмите alt-F2. Вы должны снова 
+    увидеть подсказку login: , то есть перед вами вторая виртуальная консоль, 
+    а вы вошли через первую. Чтобы переключиться обратно на первую VC, нажмите 
+    alt-F1. Вы снова на первой консоли.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>Linux возможно позволит вам 
+    работать с четырьмя первыми VC, используя от alt-F1 до alt-F10. Как видите, 
+    использование VC может быть очень эффективным - вы можете работать на нескольких 
+    VC одновременно.<o:p></o:p></span></b></p>
+  <p class=MsoNormal style='text-align:justify;text-indent:36.0pt'><b><span
+style='font-size:12.0pt;mso-bidi-font-size:10.0pt'>В то время, как использование 
+    виртуальных консолей ограничено (кроме прочего, в каждый момент времени вы 
+    можете видеть только одну виртуальную консоль) оно дает вам представление 
+    о многопользовательских возможностях UNIX. Пока вы работаете на VC #1, вы 
+    можете переключиться на VC #2 и начать работу над чем-то другим.<o:p></o:p></span></b></p>
+  </div>
+
+</body>
+
+</html>
